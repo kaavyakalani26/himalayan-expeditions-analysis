@@ -1,0 +1,36 @@
+---
+title: "Title"
+subtitle: "Subtitle"
+author: Kaavya Kalani
+thanks: "Code and data supporting this analysis is available at: "
+date: today
+date-format: long
+abstract: "Abstract"
+format: pdf
+number-sections: true
+toc: true
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+```
+
+# Introduction
+
+The paper is further organized into four sections: Data, Model, Results, and Discussion. In the Data section, we discuss how the datasets to be used for the analysis were obtained and pre-processed. We will explain the variables of interest in the datasets for the analysis. The Model section describes the model being used for the analysis. The Results section will then highlight and discuss the trends and associations found during the analysis. Lastly, the Discussion section will talk about some interesting trends found in Results in depth, link it to the real world and also highlight the weaknesses and future of our analysis.
+
+# Data
+
+# Model
+
+# Results
+
+# Discussion
+
+# Appendix
+
+# References
