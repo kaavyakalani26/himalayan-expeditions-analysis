@@ -70,6 +70,8 @@ Among the overall range of variables available, we chose the following to be inc
 - `Solo` represents whether the person attempted a solo ascent.
 - `Died` represents whether the person died during the expedition.
 
+(Plot the variables)
+
 Out of these, we will be using `height of the peak`, `seasons`, `sex`, `age` and `solo` in our model as the independent variables and `success` as the dependent variable.
 
 # Model {#sec-model}
@@ -187,6 +189,19 @@ ggplot(prediction_df, aes(x = sex, y = success_probability, fill = sex)) +
 ## Future Directions
 
 # Appendix
+
+## Cleaning
+For the analysis data, the cleaning steps we took were:
+
+1. Initial merging: I first merge the raw data from the `expeditions` and `members` datasets based on a common identifier, `expedition_id`, to consolidate information about expedition participants.
+
+2. Column selection and renaming: Irrelevant columns are removed from the merged dataset, and the remaining columns (`peak_id.x`, `season.x`, `sex`, `age`, `success`, `solo`, `died`) are selected for further analysis. Additionally, column `peak_id.x` is renamed to `peak_id`.
+
+3. Secondary merging: The cleaned `expeditions` dataset is merged with the `peaks` dataset based on a common identifier, `peak_id`, to incorporate information about the height of each peak climbed during expeditions.
+
+4. Filtering out incomplete data: Rows with missing values for key variables such as `sex` or `age` are filtered out to ensure the integrity of the dataset.
+
+5. Final dataset creation: The resulting dataset is further refined to include only relevant columns (`peak_id`, `height_metres`, `season.x`, `sex`, `age`, `success`, `solo`, `died`). Some column names are adjusted for clarity, such as `season.x` being renamed to `seasons`, and `height_metres` being renamed to `height`.
 
 ## Analysis dataset
 Here is a glimpse of the dataset used for analysis
