@@ -1,8 +1,8 @@
 ---
-title: "Title"
-subtitle: "Subtitle"
+title: "Himalayan Expeditions Success Analysis "
+subtitle: "Analysis using data from XXX leveraging Bayesian Logistic Regression"
 author: Kaavya Kalani
-thanks: "Code and data supporting this analysis is available at: "
+thanks: "Code and data supporting this analysis is available at: https://github.com/kaavyakalani26/himalayan-expeditions-analysis"
 date: today
 date-format: long
 abstract: "Abstract"
@@ -17,20 +17,176 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
+library(broom.mixed)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(modelsummary)
+library(here)
+library(kableExtra)
+
+expeditions_model <- readRDS(here("models/single_bay.rds"))
+analysis_data <- read.csv(here("data/analysis_data/expeditions.csv"))
 ```
 
 # Introduction
 
-The paper is further organized into four sections: Data, Model, Results, and Discussion. In the Data section, we discuss how the datasets to be used for the analysis were obtained and pre-processed. We will explain the variables of interest in the datasets for the analysis. The Model section describes the model being used for the analysis. The Results section will then highlight and discuss the trends and associations found during the analysis. Lastly, the Discussion section will talk about some interesting trends found in Results in depth, link it to the real world and also highlight the weaknesses and future of our analysis.
+1) broader context to motivate; 
+2) some detail about what the paper is about; 
+3) a clear gap that needs to be filled; 
+4) what was done; 
+5) what was found; 
+6) why it is important;
+7) Estimand
 
-# Data
+(Likely 3 or 4 paragraphs, or 10 per cent of total.)
 
-# Model
+The paper is further organized into four sections. @sec-data discusses how the dataset to be used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly,@sec-discussion talks about some interesting trends found in @sec-results in depth, link it to the real world and also highlight the weaknesses and future of my analysis.
 
-# Results
+# Data {#sec-data}
+For this analysis, we have used combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `broom.mixed` [@citeBroomMixed], `modelsummary` [@citeModelSummary] and `kableExtra` [@citeKableExtra].
 
-# Discussion
+## Analysis Dataset
+The analysis data is from XXXX. This is how it was collected.
+
+A person becomes an entry in this dataset if XXX. (Measurement)
+
+The data from datasets for XXX are combined to form our anaysis dataset. Among the overall range of variables available, we chose XXX to be included in our analysis dataset. 
+
+- Describe the variables
+
+Out of these, we will be using XXX in our model as the independent variables and XXX as the dependent variable.
+
+
+# Model {#sec-model}
+I used a Bayesian Logistic Regression model to do XXX. Logistic regression is a method used for binary classification to predict the probability of a categorical dependent variable. 
+
+For my analysis, a logistic regression model will be first used to model XXX. The model will be based on XXX independent demographic variables: XXX. (Use backticks)
+
+The logistic regression model I will be using is:
+\begin{equation}
+\log\left(\frac{\hat{p}}{1 - \hat{p}}\right) = \beta_0 + \beta_1 \times \text{height} + \beta_2 \times \text{sex} + \beta_3 \times \text{age} + \beta_4 \times \text{seasons} + \beta_5 \times \text{solo} 
+\end{equation}
+
+$$
+\begin{aligned}
+\beta_0 & \sim \mbox{Normal}(0, 2.5)\\
+\beta_1 & \sim \mbox{Normal}(0, 2.5)\\
+\beta_2 & \sim \mbox{Normal}(0, 2.5)\\
+\beta_3 & \sim \mbox{Normal}(0, 2.5)\\
+\beta_4 & \sim \mbox{Normal}(0, 2.5)\\
+\beta_5 & \sim \mbox{Normal}(0, 2.5)
+\end{aligned}
+$$
+where,
+
+- $\hat{p}$ represents the probability that someone will successfully complete the peak they are on the expedition for.
+- $\beta_0$ represents the intercept term of this logistical regression. It is the probability that someone will successfully complete the peak they are on the expedition for if the predictors' values are zero
+- $\beta_1$ is the coefficient corresponding to height of the peak
+- $\beta_2$ is the coefficient corresponding to sex
+- $\beta_3$ is the coefficients corresponding to age
+- $\beta_4$ is the coefficients corresponding to seasons
+- $\beta_5$ is the coefficients corresponding to solo
+
+In my model, normal priors with a mean of 0 and a standard deviation of 2.5 are used for both the coefficients and the intercept. Setting the mean of the priors to 0 implies that there is no expectation of a particular direction or magnitude for the coefficients or intercept. I chose this as I have no expectation of the same. The standard deviation of 2.5 reflects the uncertainty or variability in the prior beliefs. I chose a moderately wide prior to allow for a reasonable amount of uncertainty. 
+
+The chosen priors allow the data to largely determine the posterior distribution as they are relatively non-informative. They don't heavily influence the results unless the data provide strong evidence to the contrary.
+
+The use of moderately wide priors can also help regularize the model, preventing overfitting and providing more stable estimates, particularly when dealing with limited data.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: tbl-model-coefficients
+#| tbl-cap: Summary of the model
+
+# Create model summary
+# model_summary <- modelsummary(expeditions_model)
+
+# Extract coefficients
+coefficients <- broom::tidy(expeditions_model, conf.int = TRUE)
+coefficients |> kable(digits = 2)
+```
+@tbl-model-coefficients shows the coefficients for my Bayesian model along with the standard error and the 95% credible interval. The standard error (SE) is a measure of the precision with which a sample statistic estimates a population parameter. It quantifies the variability of sample statistics around the population parameter. A 95% credible interval means that there is a 95% probability that the true parameter lies within the interval, given the observed data and the model assumptions.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-model-coefficients
+#| fig-cap: Coefficients of the model
+
+ggplot(coefficients, aes(x = estimate, y = term)) +
+  geom_point() + # Coefficient points
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high)) + # Confidence/Credible interval bars
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") + # Add zero line
+  labs(x = "Coefficient Estimate", y = "Predictor Variable") + # Axis labels
+  theme_minimal() # Minimal theme for better readability
+``` 
+@fig-model-coefficients illustrates the coefficients and their associated 95% credible intervals for the predictor variables in the Bayesian model. Each point represents the estimated coefficient for a predictor variable, while the horizontal lines depict the credible interval around the estimate. Variables with coefficients to the right of zero indicate a positive association with the outcome variable, suggesting that an increase in the predictor variable corresponds to an increase in the outcome variable. Conversely, coefficients to the left of zero indicate a negative association, implying that an increase in the predictor variable is associated with a decrease in the outcome variable. These insights can help in understanding the direction and magnitude of the relationships between predictor variables and the outcome in the Bayesian model.
+
+# Results {#sec-results}
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-results
+#| fig-cap: Results1
+
+# Create a data frame with all combinations of sex and seasons
+sex_levels <- c('M', 'F')  # Replace with actual categories
+seasons_levels <- unique(analysis_data$seasons)  # Extract unique seasons from your analysis data
+
+new_data <- expand.grid(
+  sex = sex_levels,
+  seasons = seasons_levels
+)
+
+# Predicting success based on sex and seasons
+predictions <- predict(expeditions_model, newdata = new_data, type = "response")
+
+# Create a data frame to display the predictions
+prediction_df <- data.frame(
+  sex = new_data$sex, 
+  seasons = new_data$seasons, 
+  success_probability = predictions
+)
+
+ggplot(prediction_df, aes(x = sex, y = success_probability, fill = sex)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Predicted Success Probability by Gender",
+       x = "Sex",
+       y = "Success Probability") +
+  theme_minimal()
+
+```
+
+# Discussion {#sec-discussion}
+1) What is done in this paper? 
+2) What is something that we learn about the world?
+3) What are some weaknesses of what was done? What is left to learn or how should we proceed in the future?
+
+## Weaknesses and Limitations
+
+## Future Directions
 
 # Appendix
+
+## Analysis dataset
+Here is a glimpse of the dataset used for analysis
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: tbl-survey
+#| tbl-cap: Analysis dataset
+#| 
+head(analysis_data)  %>%
+  kable(digits = 2)
+```
 
 # References
