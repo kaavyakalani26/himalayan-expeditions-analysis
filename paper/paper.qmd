@@ -60,9 +60,9 @@ Out of these, we will be using XXX in our model as the independent variables and
 
 
 # Model {#sec-model}
-I used a Bayesian Logistic Regression model to do XXX. Logistic regression is a method used for binary classification to predict the probability of a categorical dependent variable. 
+I used a Bayesian Logistic Regression model to find the probability that someone will successfully complete the Himalayan peak they are on the expedition for. Logistic regression is a method used for binary classification to predict the probability of a categorical dependent variable. 
 
-For my analysis, a logistic regression model will be first used to model XXX. The model will be based on XXX independent demographic variables: XXX. (Use backticks)
+For my analysis, a logistic regression model will be used to model if the person will be successful on their attempt to climb the particular Himalayan peak. The model will be based on five independent demographic variables: `height of the peak`, `sex`, `age`, `seasons` and `solo`.
 
 The logistic regression model I will be using is:
 \begin{equation}
