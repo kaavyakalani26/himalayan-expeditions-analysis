@@ -16,7 +16,7 @@ members <- read.csv("data/raw_data/members.csv")
 
 merged_data1 <- merge(expeditions, members, by = "expedition_id")
 merged_data1 <- merged_data1 %>%
-  select(peak_id.x, season.x, sex, age, success, solo, died, members) %>%
+  select(peak_id.x, season.x, sex, age, success, solo, died) %>%
   rename(peak_id = peak_id.x)
 
 peaks <- peaks %>%
@@ -24,8 +24,8 @@ peaks <- peaks %>%
 
 merged_data2 <- merge(merged_data1, peaks, by = "peak_id")
 main_data <- merged_data2 %>%
-  filter(!is.na(sex), !is.na(age), members > 0) %>%
-  select(peak_id, height_metres, season.x, sex, age, success, solo, died, members) %>%
+  filter(!is.na(sex), !is.na(age)) %>%
+  select(peak_id, height_metres, season.x, sex, age, success, solo, died) %>%
   rename(height = height_metres, seasons = season.x)
 
 #### Save the cleaned data ####

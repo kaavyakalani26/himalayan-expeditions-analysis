@@ -21,10 +21,10 @@ if (any(is.na(analysis_data))) {
 }
 
 # Test 2: Check the number of columns
-if (ncol(analysis_data) == 9) {
-  print("Number of columns is 9.")
+if (ncol(analysis_data) == 8) {
+  print("Number of columns is 8.")
 } else {
-  print("Number of columns is not 9.")
+  print("Number of columns is not 8.")
 }
 
 # Test 3: Check the values in the height column are all positive
@@ -77,10 +77,4 @@ if (all(analysis_data$died %in% c(TRUE, FALSE))) {
   print("There are invalid values in the 'died' column.")
 }
 
-# Test 10: Check the values in the members column are all valid
-if (all(analysis_data$members > 0)) {
-  print("Values in the 'members' column are valid")
-} else {
-  print("There are invalid values in the 'members' column.")
-}
 
