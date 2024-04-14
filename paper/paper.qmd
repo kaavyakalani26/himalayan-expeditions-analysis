@@ -43,7 +43,7 @@ Our analysis led to us … (add what was found)
 
 This research highlights the interplay between climber attributes and environmental conditions, offering insights into Himalayan expeditions. These findings have practical implications for expedition planning, risk management, and safety protocols. Ultimately, our study aims to improve decision-making in high-altitude mountaineering, making it safer and more informed in one of the world's most challenging environments.
 
-The paper is further organized into four sections. @sec-data discusses how the dataset to be used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly,@sec-discussion talks about some interesting trends found in @sec-results in depth, link it to the real world and also highlight the weaknesses and future of my analysis.
+The paper is further organized into four sections. @sec-data discusses how the dataset to be used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly, @sec-discussion talks about some interesting trends found in @sec-results in depth, link it to the real world and also highlight the weaknesses and future of my analysis.
 
 # Data {#sec-data}
 For this analysis, we have used combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `broom.mixed` [@citeBroomMixed], `modelsummary` [@citeModelSummary] and `kableExtra` [@citeKableExtra].
@@ -103,7 +103,7 @@ where,
 - $\beta_2$ is the coefficient corresponding to sex of the person
 - $\beta_3$ is the coefficients corresponding to age of the person
 - $\beta_4$ is the coefficients corresponding to seasons of the person
-- $\beta_5$ is the coefficients corresponding to if the person is attempting the summit alone.
+- $\beta_5$ is the coefficients corresponding to if the person is attempting the summit alone
 
 In my model, normal priors with a mean of 0 and a standard deviation of 2.5 are used for both the coefficients and the intercept. Setting the mean of the priors to 0 implies that there is no expectation of a particular direction or magnitude for the coefficients or intercept. I chose this as I have no expectation of the same. The standard deviation of 2.5 reflects the uncertainty or variability in the prior beliefs. I chose a moderately wide prior to allow for a reasonable amount of uncertainty. 
 
@@ -152,6 +152,25 @@ ggplot(coefficients, aes(x = estimate, y = term)) +
 #| label: fig-results
 #| fig-cap: Results1
 
+# Create a data frame with all combinations of sex and seasons
+sex_levels <- unique(analysis_data$sex) 
+seasons_levels <- unique(analysis_data$seasons)
+
+new_data <- expand.grid(
+  sex = sex_levels,
+  seasons = seasons_levels
+)
+
+# Predicting success based on sex and seasons
+predictions <- predict(expeditions_model, newdata = new_data, type = "response")
+
+# Create a data frame to display the predictions
+prediction_df <- data.frame(
+  sex = new_data$sex, 
+  seasons = new_data$seasons, 
+  success_probability = predictions
+)
+
 ggplot(prediction_df, aes(x = sex, y = success_probability, fill = sex)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Predicted Success Probability by Gender",
@@ -164,7 +183,6 @@ ggplot(prediction_df, aes(x = sex, y = success_probability, fill = sex)) +
 # Discussion {#sec-discussion}
 1) What is done in this paper? 
 2) What is something that we learn about the world?
-3) What are some weaknesses of what was done? What is left to learn or how should we proceed in the future?
 
 ## Weaknesses and Limitations
 
