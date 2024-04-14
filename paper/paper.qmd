@@ -1,11 +1,11 @@
 ---
-title: "Himalayan Expeditions Success Analysis "
+title: "Himalayan Expeditions Success Analysis"
 subtitle: "Analysis using data from Himalayan expeditions from 1905 through Spring 2019 leveraging Bayesian Logistic Regression"
 author: Kaavya Kalani
-thanks: "Code and data supporting this analysis is available at: https://github.com/kaavyakalani26/himalayan-expeditions-analysis"
+thanks: "Code and data supporting this analysis is available at: [https://github.com/kaavyakalani26/himalayan-expeditions-analysis](https://github.com/kaavyakalani26/himalayan-expeditions-analysis)"
 date: today
 date-format: long
-abstract: "Abstract"
+abstract: "I analyse the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. We find a strong relations between height of the peak, sex, age, season of expedition, if it was a solo ascent, and the success in summitting. This research provides insights into factors affecting the successfullness of an expedition to a summit and helps for future expedition planning, risk management, and safety protocols."
 format: pdf
 number-sections: true
 toc: true
