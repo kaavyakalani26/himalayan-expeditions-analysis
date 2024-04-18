@@ -16,8 +16,8 @@ library(arrow)
 analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
 
 # Fit a Bayesian logistic regression model
-single_bay <- 
-  stan_glm(  
+single_bay <-
+  stan_glm(
     success ~ height_range + sex + solo + age_range + seasons,
     data = analysis_data,
     family = binomial(link = "logit"),

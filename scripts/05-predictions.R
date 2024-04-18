@@ -15,7 +15,7 @@ analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
 expeditions_model <- readRDS("models/single_bay.rds")
 
 # Create a data frame with all combinations of variables
-sex_levels <- unique(analysis_data$sex) 
+sex_levels <- unique(analysis_data$sex)
 seasons_levels <- unique(analysis_data$seasons)
 height_levels <- unique(analysis_data$height_range)
 age_levels <- unique(analysis_data$age_range)
@@ -34,8 +34,8 @@ predictions <- predict(expeditions_model, newdata = new_data, type = "response")
 
 # Create a data frame to display the predictions
 prediction_df <- data.frame(
-  sex = new_data$sex, 
-  seasons = new_data$seasons, 
+  sex = new_data$sex,
+  seasons = new_data$seasons,
   height_range = new_data$height_range,
   age_range = new_data$age_range,
   solo = new_data$solo,
@@ -44,4 +44,3 @@ prediction_df <- data.frame(
 
 #### Saving the predictions ####
 write.csv(prediction_df, "data/predictions/predictions.csv", row.names = FALSE)
-

@@ -35,8 +35,10 @@ if (ncol(analysis_data) != 7) {
 }
 
 # Test 3: Check the values in the height column are all valid
-heights <- c("5400 - 5749", "5750 - 6099", "6100 - 6449", "6450 - 6799", "6800 - 7149", "7150 - 7499", 
-             "7500 - 7849", "7850 - 8199", "8200 - 8549", "8550 - 8900")
+heights <- c(
+  "5400 - 5749", "5750 - 6099", "6100 - 6449", "6450 - 6799", "6800 - 7149", "7150 - 7499",
+  "7500 - 7849", "7850 - 8199", "8200 - 8549", "8550 - 8900"
+)
 if (!all(analysis_data$height_range %in% heights)) {
   print("There are invalid values in the 'height' column.")
   all_tests_passed <- FALSE
@@ -54,7 +56,7 @@ if (!all(analysis_data$seasons %in% seasons)) {
 }
 
 # Test 5: Check the values in the sex column are all valid
-if (!all(analysis_data$sex %in% c('M', 'F'))) {
+if (!all(analysis_data$sex %in% c("M", "F"))) {
   print("There are invalid values in the 'sex' column.")
   all_tests_passed <- FALSE
 } else {
@@ -95,8 +97,8 @@ if (!all(analysis_data$died %in% c(TRUE, FALSE))) {
 }
 
 # Print summary based on test results
-if(all_tests_passed) {
+if (all_tests_passed) {
   print("All tests passed.")
 } else {
-  print("One or more tests failed. Check the individual test results for more information on which tests failed.")
+  print("One or more tests failed.")
 }

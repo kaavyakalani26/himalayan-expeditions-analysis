@@ -7,16 +7,18 @@
 # Pre-requisites: None
 
 # List of packages to install
-packages <- c("tidyverse", 
-              "rstanarm", 
-              "broom.mixed", 
-              "dplyr", 
-              "knitr", 
-              "ggplot2", 
-              "modelsummary", 
-              "here", 
-              "kableExtra",
-              "arrow")
+packages <- c(
+  "tidyverse",
+  "rstanarm",
+  "broom.mixed",
+  "dplyr",
+  "knitr",
+  "ggplot2",
+  "modelsummary",
+  "here",
+  "kableExtra",
+  "arrow"
+)
 
 # Install packages if they are not already installed
 for (package in packages) {
@@ -24,4 +26,3 @@ for (package in packages) {
     install.packages(package, dependencies = TRUE)
   }
 }
-
