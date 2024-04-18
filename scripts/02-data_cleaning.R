@@ -33,21 +33,21 @@ merged_data2 <- merge(merged_data1, peaks, by = "peak_id")
 
 main_data <- merged_data2 %>%
   filter(!is.na(sex), !is.na(age)) %>% # Filter out rows with missing values for sex or age
-  rename(height = height_metres, seasons = season.x) %>%
+  rename(seasons = season.x) %>%
   mutate(
     # Create height range categories
     height_range = case_when(
-      height >= 5400 & height < 5750 ~ "5400 - 5749",
-      height >= 5750 & height < 6100 ~ "5750 - 6099",
-      height >= 6100 & height < 6450 ~ "6100 - 6449",
-      height >= 6450 & height < 6800 ~ "6450 - 6799",
-      height >= 6800 & height < 7150 ~ "6800 - 7149",
-      height >= 7150 & height < 7500 ~ "7150 - 7499",
-      height >= 7500 & height < 7850 ~ "7500 - 7849",
-      height >= 7850 & height < 8200 ~ "7850 - 8199",
-      height >= 8200 & height < 8550 ~ "8200 - 8549",
-      height >= 8550 & height <= 8900 ~ "8550 - 8900",
-      TRUE ~ as.character(height)
+      height_metres >= 5400 & height < 5750 ~ "5400 - 5749",
+      height >= 5750 & height_metres < 6100 ~ "5750 - 6099",
+      height_metres >= 6100 & height_metres < 6450 ~ "6100 - 6449",
+      height_metres >= 6450 & height_metres < 6800 ~ "6450 - 6799",
+      height_metres >= 6800 & height_metres < 7150 ~ "6800 - 7149",
+      height_metres >= 7150 & height_metres < 7500 ~ "7150 - 7499",
+      height_metres >= 7500 & height_metres < 7850 ~ "7500 - 7849",
+      height_metres >= 7850 & height_metres < 8200 ~ "7850 - 8199",
+      height_metres >= 8200 & height_metres < 8550 ~ "8200 - 8549",
+      height_metres >= 8550 & height_metres <= 8900 ~ "8550 - 8900",
+      TRUE ~ as.character(height_metres)
     ),
     # Create age range categories
     age_range = case_when(

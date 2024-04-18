@@ -342,7 +342,7 @@ ggplot(predictions, aes(x = sex, y = success_probability, fill = solo)) +
 ## Cleaning
 For the analysis data, the cleaning steps I took were:
 
-1. Initial merging: I first merge the raw data from the `expeditions` and `members` datasets based on a common identifier, `expedition_id`, to consolidate information about expedition participants.
+1. Initial merging: The raw data from the expeditions and members datasets is merged based on a common identifier, expedition_id, consolidating information about expedition participants.
 
 2. Column selection and renaming: Irrelevant columns are removed from the merged dataset, and the remaining columns (`peak_id.x`, `season.x`, `sex`, `age`, `success`, `solo`, `died`) are selected for further analysis. Additionally, column `peak_id.x` is renamed to `peak_id`.
 
@@ -350,7 +350,9 @@ For the analysis data, the cleaning steps I took were:
 
 4. Filtering out incomplete data: Rows with missing values for key variables such as `sex` or `age` are filtered out to ensure the integrity of the dataset.
 
-5. Final dataset creation: The resulting dataset is further refined to include only relevant columns (`peak_id`, `height_metres`, `season.x`, `sex`, `age`, `success`, `solo`, `died`). Some column names are adjusted for clarity, such as `season.x` being renamed to `seasons`, and `height_metres` being renamed to `height`.
+5. New ranges: Height range categories are created based on predefined ranges in meters: 5400-5749, 5750-6099, 6100-6449, 6450-6799, 6800-7149, 7150-7499, 7500-7849, 7850-8199, 8200-8549, and 8550-8900. Age range categories are defined as follows: Under 18, 19-30, 31-40, 41-50, 51-60, 61-70, 71-80, 81-90, and 91 or older.
+
+5. Final dataset creation: `season.x` is renamed to `seasons`. and then the resulting dataset is further refined to include only relevant columns (`height_range`, `seasons`, `sex`, `age_range`, `success`, `solo`, `died`).
 
 ## Analysis dataset
 Here is a glimpse of the dataset used for analysis
