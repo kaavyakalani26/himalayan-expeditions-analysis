@@ -20,4 +20,4 @@ The repo is structured as:
 -   `scripts` contains the R scripts used to load all necessary packages for replication, simulate, clean, test, model data and make predictions.
 
 ## Statement on LLM usage
-ChatGPT v3.5 was used to .... The entire chat history is available in `other/llm/usage.txt`
+ChatGPT v3.5 was used to create functions for repeated code. The entire chat history is available in `other/llm/usage.txt`

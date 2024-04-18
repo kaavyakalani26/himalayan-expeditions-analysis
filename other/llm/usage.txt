@@ -1,0 +1,175 @@
+User
+ggplot(analysis_data, aes(x = sex)) +
+  geom_bar() +
+  labs(x = "Sex", y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(analysis_data, aes(x = solo)) +
+  geom_bar() +
+  labs(x = "Solo", y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(analysis_data, aes(x = age_range)) +
+  geom_bar() +
+  labs(x = "Age", y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(analysis_data, aes(x = seasons)) +
+  geom_bar() +
+  labs(x = "Seasons", y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(analysis_data, aes(x = height_range)) +
+  geom_bar() +
+  labs(x = "Height", y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+CAN WE MAKE A FUNCTION FOR THIS
+ChatGPT
+Certainly! We can create a function that takes the data frame (analysis_data) and the variable (x) as inputs, and then generates the corresponding bar plot with appropriate labels and themes. Here's how you can do it:
+
+R
+Copy code
+library(ggplot2)
+
+plot_bar <- function(data, x, x_label, y_label) {
+  ggplot(data, aes_string(x = x)) +
+    geom_bar() +
+    labs(x = x_label, y = y_label) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+You can use this function by passing your analysis data frame, the variable you want to plot (x), the label for the x-axis (x_label), and the label for the y-axis (y_label). For example:
+
+R
+Copy code
+plot_bar(analysis_data, "sex", "Sex", "Count")
+plot_bar(analysis_data, "solo", "Solo", "Count")
+plot_bar(analysis_data, "age_range", "Age", "Count")
+plot_bar(analysis_data, "seasons", "Seasons", "Count")
+plot_bar(analysis_data, "height_range", "Height", "Count")
+This will produce the same plots as before, but with less repeated code.
+
+User
+do a custom order for age_range
+
+  custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+ChatGPT
+To achieve a custom order for the age_range variable in the bar plot, you can use the factor function to specify the levels in the desired order. Here's how you can modify the function to incorporate the custom order:
+
+R
+Copy code
+plot_bar <- function(data, x, x_label, y_label, custom_order = NULL) {
+  if (!is.null(custom_order)) {
+    data[[x]] <- factor(data[[x]], levels = custom_order)
+  }
+  
+  ggplot(data, aes_string(x = x)) +
+    geom_bar() +
+    labs(x = x_label, y = y_label) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+Then you can call the function with the custom order specified:
+
+R
+Copy code
+custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+
+plot_bar(analysis_data, "age_range", "Age", "Count", custom_order)
+This will create the bar plot for the age_range variable with the custom order specified.
+
+User
+can we do a if else in the function instead
+ChatGPT
+Yes, we can incorporate an if-else statement directly into the function to handle the custom order. Here's the modified function:
+
+R
+Copy code
+plot_bar <- function(data, x, x_label, y_label) {
+  if (x == "age_range") {
+    custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+    data[[x]] <- factor(data[[x]], levels = custom_order)
+  }
+  
+  ggplot(data, aes_string(x = x)) +
+    geom_bar() +
+    labs(x = x_label, y = y_label) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+This function checks if the input variable x is equal to "age_range". If it is, it applies the custom order; otherwise, it proceeds with the standard plotting procedure. Now, you can call the function without explicitly passing the custom order:
+
+R
+Copy code
+plot_bar(analysis_data, "age_range", "Age", "Count")
+This function will generate the bar plot for the age_range variable with the custom order. For other variables, it will generate plots without any custom order applied.
+
+User
+i want to set a colour = blue for all the bars
+ChatGPT
+Sure, you can modify the function to set the color of the bars to blue for all plots. Here's the updated function:
+
+R
+Copy code
+plot_bar <- function(data, x, x_label, y_label) {
+  if (x == "age_range") {
+    custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+    data[[x]] <- factor(data[[x]], levels = custom_order)
+  }
+  
+  ggplot(data, aes_string(x = x)) +
+    geom_bar(fill = "blue") +  # Set color to blue
+    labs(x = x_label, y = y_label) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+Now, when you call the function, it will generate bar plots with blue bars for all variables:
+
+R
+Copy code
+plot_bar(analysis_data, "sex", "Sex", "Count")
+plot_bar(analysis_data, "solo", "Solo", "Count")
+plot_bar(analysis_data, "age_range", "Age", "Count")
+plot_bar(analysis_data, "seasons", "Seasons", "Count")
+plot_bar(analysis_data, "height_range", "Height", "Count")
+This will produce bar plots with blue bars for all variables.
+
+User
+light blue
+ChatGPT
+Certainly! You can adjust the shade of blue to make it lighter. Here's the updated function with light blue bars:
+
+R
+Copy code
+plot_bar <- function(data, x, x_label, y_label) {
+  if (x == "age_range") {
+    custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+    data[[x]] <- factor(data[[x]], levels = custom_order)
+  }
+  
+  ggplot(data, aes_string(x = x)) +
+    geom_bar(fill = "lightblue") +  # Set color to light blue
+    labs(x = x_label, y = y_label) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+Now, when you call the function, it will generate bar plots with light blue bars for all variables:
+
+R
+Copy code
+plot_bar(analysis_data, "sex", "Sex", "Count")
+plot_bar(analysis_data, "solo", "Solo", "Count")
+plot_bar(analysis_data, "age_range", "Age", "Count")
+plot_bar(analysis_data, "seasons", "Seasons", "Count")
+plot_bar(analysis_data, "height_range", "Height", "Count")
+This will produce bar plots with light blue bars for all variables.
+
+
+
+
