@@ -25,9 +25,11 @@ library(ggplot2)
 library(modelsummary)
 library(here)
 library(kableExtra)
+library(arrow)
 
 expeditions_model <- readRDS(here("models/single_bay.rds"))
-analysis_data <- read.csv(here("data/analysis_data/expeditions.csv"))
+analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
+predictions <- read.csv(here("data/predictions/predictions.csv"))
 ```
 
 # Introduction
@@ -46,7 +48,7 @@ This research highlights the interplay between climber attributes and environmen
 The paper is further organized into four sections. @sec-data discusses how the dataset to be used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly, @sec-discussion talks about some interesting trends found in @sec-results in depth, link it to the real world and also highlight the weaknesses and future of my analysis.
 
 # Data {#sec-data}
-For this analysis, we have used combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `broom.mixed` [@citeBroomMixed], `modelsummary` [@citeModelSummary] and `kableExtra` [@citeKableExtra].
+For this analysis, we have used combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `arrow` [@citeArrow], `broom.mixed` [@citeBroomMixed], `modelsummary` [@citeModelSummary] and `kableExtra` [@citeKableExtra].
 
 ## Analysis Dataset
 The raw datasets were obtained from Alex Cookson's datasets (link). I chose the ones cleaned for Himalayan expeditions. Alex got his datasets from The Himalayan Database (link). 
@@ -117,8 +119,8 @@ The use of moderately wide priors can also help regularize the model, preventing
 #| message: false
 #| label: tbl-model-coefficients
 #| tbl-cap: Summary of the model
-
-# Create model summary
+# 
+# # Create model summary
 # model_summary <- modelsummary(expeditions_model)
 
 # Extract coefficients
@@ -133,6 +135,8 @@ coefficients |> kable(digits = 2)
 #| message: false
 #| label: fig-model-coefficients
 #| fig-cap: Coefficients of the model
+
+coefficients <- coefficients[coefficients$term != "age_range81-90", ]
 
 ggplot(coefficients, aes(x = estimate, y = term)) +
   geom_point() + # Coefficient points
@@ -152,26 +156,7 @@ ggplot(coefficients, aes(x = estimate, y = term)) +
 #| label: fig-results
 #| fig-cap: Results1
 
-# Create a data frame with all combinations of sex and seasons
-sex_levels <- unique(analysis_data$sex) 
-seasons_levels <- unique(analysis_data$seasons)
-
-new_data <- expand.grid(
-  sex = sex_levels,
-  seasons = seasons_levels
-)
-
-# Predicting success based on sex and seasons
-predictions <- predict(expeditions_model, newdata = new_data, type = "response")
-
-# Create a data frame to display the predictions
-prediction_df <- data.frame(
-  sex = new_data$sex, 
-  seasons = new_data$seasons, 
-  success_probability = predictions
-)
-
-ggplot(prediction_df, aes(x = sex, y = success_probability, fill = sex)) +
+ggplot(predictions, aes(x = sex, y = success_probability, fill = sex)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Predicted Success Probability by Gender",
        x = "Sex",

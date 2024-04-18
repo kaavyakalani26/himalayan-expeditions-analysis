@@ -8,10 +8,12 @@
 
 #### Workspace setup ####
 library(tidyverse)
+library(arrow)
 
+#### Tests ####
 print("Testing analysis data")
 
-analysis_data <- read.csv("data/analysis_data/expeditions.csv")
+analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
 
 # Test 1: Check for missing data
 if (any(is.na(analysis_data))) {

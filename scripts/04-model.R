@@ -9,9 +9,10 @@
 #### Workspace setup ####
 library(tidyverse)
 library(rstanarm)
+library(arrow)
 
 #### Read the data ####
-analysis_data <- read.csv("data/analysis_data/expeditions.csv")
+analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
 
 single_bay <- 
   stan_glm(  

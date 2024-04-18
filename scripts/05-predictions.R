@@ -8,9 +8,10 @@
 
 #### Workspace setup ####
 library(tidyverse)
+library(arrow)
 
 #### Prediciton dataset ####
-analysis_data <- read.csv("data/analysis_data/expeditions.csv")
+analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
 expeditions_model <- readRDS("models/single_bay.rds")
 
 # Create a data frame with all combinations of variables

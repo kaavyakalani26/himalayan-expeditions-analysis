@@ -15,7 +15,8 @@ packages <- c("tidyverse",
               "ggplot2", 
               "modelsummary", 
               "here", 
-              "kableExtra")
+              "kableExtra",
+              "arrow")
 
 # Install packages if they are not already installed
 for (package in packages) {
