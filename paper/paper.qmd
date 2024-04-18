@@ -73,9 +73,99 @@ Among the overall range of variables available, I chose the following to be incl
 - `Solo` represents whether the person attempted a solo ascent.
 - `Died` represents whether the person died during the expedition.
 
-(Plot the variables)
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: Counts for the variables of interest
+#| fig-subcap: ["Sex", "Solo Status", "Age", "Seasons", "Height of the Peak"]
+#| label: fig-counts
+#| layout-ncol: 2
+
+plot_bar <- function(data, x, x_label) {
+  if (x == "age_range") {
+    custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+    data[[x]] <- factor(data[[x]], levels = custom_order)
+  }
+  
+  ggplot(data, aes_string(x = x)) +
+    geom_bar(fill = "lightblue") +
+    labs(x = x_label, y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+plot_bar(analysis_data, "sex", "Sex")
+plot_bar(analysis_data, "solo", "Solo Status")
+plot_bar(analysis_data, "age_range", "Age")
+plot_bar(analysis_data, "seasons", "Season")
+plot_bar(analysis_data, "height_range", "Height of the Peak")
+
+```
+
+@fig-counts shows
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: Proportions for the variables of interest and the outcome of their expedition
+#| fig-subcap: ["Sex", "Solo Status", "Age", "Seasons", "Height of the Peak"]
+#| label: fig-proportions
+#| layout-ncol: 2
+
+library(tidyr)
+
+# Define a function to create the plot for each variable
+create_plot <- function(data, x_var, x_label) {
+  custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+
+  # Create a dataframe with all possible combinations of x_var, success, and died
+  all_combinations <- expand.grid(
+    x_var = unique(data[[x_var]]),
+    success = c(TRUE, FALSE),
+    died = c(TRUE, FALSE)
+  )
+  
+  # Join the original data with all_combinations to fill in missing combinations
+  plot_data <- all_combinations %>%
+    left_join(data, by = c(x_var = x_var, success = "success", died = "died")) %>%
+    group_by(x_var, success, died) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(x_var) %>%
+    mutate(proportion = count / sum(count)) %>%
+    filter(success | died)
+  
+  # If x_var is "age_range", convert it to a factor with custom order
+  if (x_var == "age_range") {
+    plot_data$x_var <- factor(plot_data$x_var, levels = custom_order)
+  }
+  
+  p <- ggplot(plot_data, aes(x = x_var, y = proportion, fill = factor(success))) +
+    geom_bar(stat = "identity", position = "dodge") +
+    scale_fill_manual(values = c("TRUE" = "green", "FALSE" = "red"), 
+                      labels = c("Success", "Died"),
+                      name = "Outcome") +
+    labs(x = x_label, y = "Proportion") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  return(p)
+}
+
+# Create plots for each variable
+create_plot(analysis_data, "sex", "Sex")
+create_plot(analysis_data, "solo", "Solo Status")
+create_plot(analysis_data, "age_range", "Age")
+create_plot(analysis_data, "seasons", "Season")
+create_plot(analysis_data, "height_range", "Height of the Peak")
+```
+
+@fig-proportions shows
 
 Out of these, I will be using `height of the peak`, `seasons`, `sex`, `age` and `solo` in the model as the independent variables and `success` as the dependent variable.
+
+\newpage
 
 # Model {#sec-model}
 I used a Bayesian Logistic Regression model to find the probability that someone will successfully summit the Himalayan peak they are on the expedition for. Logistic regression is a method used for binary classification to predict the probability of a categorical dependent variable. 
@@ -153,18 +243,93 @@ ggplot(coefficients, aes(x = estimate, y = term)) +
 #| echo: false
 #| warning: false
 #| message: false
-#| label: fig-results
-#| fig-cap: Results1
+#| label: fig-sex
+#| fig-cap: Predicted Success Probability by Sex
 
 ggplot(predictions, aes(x = sex, y = success_probability, fill = sex)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Predicted Success Probability by Gender",
+  labs(title = "Predicted Success Probability by Sex",
        x = "Sex",
+       y = "Success Probability") +
+  theme_minimal()
+```
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-age
+#| fig-cap: Predicted Success Probability by Age
+
+# Define custom order for age_range levels
+custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+
+# Convert age_range to factor with custom order
+predictions$age_range <- factor(predictions$age_range, levels = custom_order)
+
+
+ggplot(predictions, aes(x = age_range, y = success_probability, fill = age_range)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Predicted Success Probability by Age",
+       x = "Age",
        y = "Success Probability") +
   theme_minimal()
 
 ```
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-subplots
+#| fig-cap: Predicted Success Probability by Age and Sex
 
+# Define custom order for age_range levels
+custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+
+# Convert age_range to factor with custom order
+predictions$age_range <- factor(predictions$age_range, levels = custom_order)
+
+ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Predicted Success Probability by Age and Sex",
+       x = "Age",
+       y = "Success Probability") +
+  facet_grid(sex ~ .) +  # Create subplots for each sex
+  theme_minimal()
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-subplots-height
+#| fig-cap: Predicted Success Probability by Height Range and Seasons
+
+ggplot(predictions, aes(x = height_range, y = success_probability, fill = seasons)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Predicted Success Probability by Height Range and Seasons",
+       x = "Height Range",
+       y = "Success Probability") +
+  facet_grid(seasons ~ .) +  # Create subplots for each season
+  theme_minimal()
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-subplots-sex-solo
+#| fig-cap: Predicted Success Probability by Sex and Solo Status
+
+ggplot(predictions, aes(x = sex, y = success_probability, fill = solo)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Predicted Success Probability by Sex and Solo Status",
+       x = "Sex",
+       y = "Success Probability") +
+  facet_grid(solo ~ .) +  # Create subplots for each solo status
+  theme_minimal()
+```
 # Discussion {#sec-discussion}
 1) What is done in this paper? 
 2) What is something that we learn about the world?
