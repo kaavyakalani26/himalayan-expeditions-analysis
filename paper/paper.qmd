@@ -86,7 +86,7 @@ plot_bar <- function(data, x, x_label) {
     custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
     data[[x]] <- factor(data[[x]], levels = custom_order)
   }
-  
+
   ggplot(data, aes_string(x = x)) +
     geom_bar(fill = "lightblue") +
     labs(x = x_label, y = "Count") +
@@ -99,7 +99,6 @@ plot_bar(analysis_data, "solo", "Solo Status")
 plot_bar(analysis_data, "age_range", "Age")
 plot_bar(analysis_data, "seasons", "Season")
 plot_bar(analysis_data, "height_range", "Height of the Peak")
-
 ```
 
 @fig-counts shows the counts for different variables we are considering to model. We see that there are significantly higher men than women. This shows the existence of a gender imbalance skewed towards men in mountaineering in the Himalayas. We also see other trends like most of the expedition members choose to not do solo ascents, most of the members fall in the middle-aged range and the peak expedition seasons are the more pleasant autumn and spring compared to the extreme seasons like winter and summer. These difference in counts need to be kept in mind when analysing success proportions.
@@ -125,7 +124,7 @@ create_plot <- function(data, x_var, x_label) {
     success = c(TRUE, FALSE),
     died = c(TRUE, FALSE)
   )
-  
+
   # Join the original data with all_combinations to fill in missing combinations
   plot_data <- all_combinations %>%
     left_join(data, by = c(x_var = x_var, success = "success", died = "died")) %>%
@@ -134,23 +133,25 @@ create_plot <- function(data, x_var, x_label) {
     group_by(x_var) %>%
     mutate(proportion = count / sum(count)) %>%
     filter(success | died)
-  
+
   # If x_var is "age_range", convert it to a factor with custom order
   if (x_var == "age_range") {
     plot_data$x_var <- factor(plot_data$x_var, levels = custom_order)
   }
-  
+
   plot_data$success <- factor(plot_data$success, levels = c(TRUE, FALSE))
-  
+
   p <- ggplot(plot_data, aes(x = x_var, y = proportion, fill = factor(success))) +
     geom_bar(stat = "identity", position = "dodge") +
-    scale_fill_manual(values = c("TRUE" = "green", "FALSE" = "red"), 
-                      labels = c("Success", "Died"),
-                      name = "Outcome") +
+    scale_fill_manual(
+      values = c("TRUE" = "green", "FALSE" = "red"),
+      labels = c("Success", "Died"),
+      name = "Outcome"
+    ) +
     labs(x = x_label, y = "Proportion") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  
+
   return(p)
 }
 
@@ -208,7 +209,7 @@ The use of moderately wide priors can also help regularize the model, preventing
 #| message: false
 #| label: tbl-model-coefficients
 #| tbl-cap: Summary of the model
-# 
+#
 # # Create model summary
 # model_summary <- modelsummary(expeditions_model)
 
@@ -256,11 +257,12 @@ predictions$age_range <- factor(predictions$age_range, levels = custom_order)
 
 ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Age",
-       y = "Success Probability") +
+  labs(
+    x = "Age",
+    y = "Success Probability"
+  ) +
   facet_grid(sex ~ .) +
   theme_minimal()
-
 ```
 @fig-age-sex shows the predicted success probability according the the age and sex of the expedition member. We notice that the success probabilities over all ages tend to be slightly higher in males compared to females, just as we saw in @fig-model-coefficients. But, when combined with age we see there differences are not constant. We see that the difference in the success probabilities for people under 50 are very close to each other but for people aged 51 or above the difference is much larger. The success probabilities are pretty high, crossing 0.8 for younger individuals but starts declining with increase in age. The steep decline in category 81-90 might stem from the significant less number of expedition members in that age group leading to a less varied result.
 
@@ -273,12 +275,13 @@ ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
 
 ggplot(predictions, aes(x = height_range, y = success_probability, fill = seasons)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "Height of the Peak",
-       y = "Success Probability") +
-  facet_grid(seasons ~ .) + 
+  labs(
+    x = "Height of the Peak",
+    y = "Success Probability"
+  ) +
+  facet_grid(seasons ~ .) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
 ```
 @fig-height-seasons shows the predicted success probability according the the height of the peak being ascended and the season of expedition. We notice that the success probabilities are pretty high for shorter mountain ranges and become lesser with increase in height. This might have to do with the fact that less higher peaks could be comparatively easier to summit. This, however, cannot be established as the trend as we see a non-pattern being followed for heights 6800 metres and above. We see that winter season expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. We also notice interesting trend as an interaction of these two factors. One such trend would be the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in Winter to around 0.6 in Autumn or Spring.
 
@@ -316,8 +319,8 @@ Here is a glimpse of the dataset used for analysis
 #| message: false
 #| label: tbl-survey
 #| tbl-cap: Analysis dataset
-#| 
-head(analysis_data)  %>%
+#|
+head(analysis_data) %>%
   kable(digits = 2)
 ```
 
@@ -326,7 +329,7 @@ head(analysis_data)  %>%
 ## Hello
 ```{r}
 #| label: fig-post_dist
-#| fig-cap: Posterior distribution for logistic regression model 
+#| fig-cap: Posterior distribution for logistic regression model
 #| echo: false
 #| warning: false
 #| message: false
