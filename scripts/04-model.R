@@ -14,8 +14,8 @@ library(rstanarm)
 analysis_data <- read.csv("data/analysis_data/expeditions.csv")
 
 single_bay <- 
-  stan_glm(
-    success ~ sex + seasons,
+  stan_glm(  
+    success ~ height_range + sex + solo + age_range + seasons,
     data = analysis_data,
     family = binomial(link = "logit"),
     prior = normal(location = 0, scale = 2.5, autoscale = TRUE),

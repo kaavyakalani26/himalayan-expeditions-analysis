@@ -38,8 +38,19 @@ main_data <- merged_data2 %>%
     height >= 8200 & height < 8550 ~ "8200 - 8549",
     height >= 8550 & height <= 8900 ~ "8550 - 8900",
     TRUE ~ as.character(height)
+    ),
+    age_range = case_when(
+      age <= 18 ~ "Under 18",
+      age > 18 & age <= 30 ~ "19-30",
+      age > 30 & age <= 40 ~ "31-40",
+      age > 40 & age <= 50 ~ "41-50",
+      age > 50 & age <= 60 ~ "51-60",
+      age > 60 & age <= 70 ~ "61-70",
+      age > 70 & age <= 80 ~ "71-80",
+      age > 80 & age <= 90 ~ "81-90",
+      TRUE ~ as.character(age)
     )) %>%
-    select(peak_id, height_range, seasons, sex, age, success, solo, died)
+    select(peak_id, height_range, seasons, sex, age, age_range, success, solo, died)
 
 #### Save the cleaned data ####
 write.csv(main_data, "data/analysis_data/expeditions.csv", row.names = FALSE)
