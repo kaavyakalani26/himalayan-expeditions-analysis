@@ -1,11 +1,11 @@
 ---
-title: "Himalayan Expeditions Success Analysis"
+title: "Understanding Factors Contributing to a Successful Himalayan Expedition"
 subtitle: "Analysis using data from Himalayan expeditions from 1905 through Spring 2019 leveraging Bayesian Logistic Regression"
 author: Kaavya Kalani
 thanks: "Code and data supporting this analysis is available at: [https://github.com/kaavyakalani26/himalayan-expeditions-analysis](https://github.com/kaavyakalani26/himalayan-expeditions-analysis)"
 date: today
 date-format: long
-abstract: "I analyse the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. I find a strong relation between height of the peak, sex, age, season of expedition, if it was a solo ascent, and the success in summitting. This research provides insights into factors affecting the successfullness of an expedition to a summit and helps for future expedition planning, risk management, and safety protocols."
+abstract: "This study analyses the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. I find a strong relation between height of the peak, sex, age, season of expedition, if it was a solo ascent, and the success in summitting. Young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase your chances of having a successful summit. The insights from this study aim to help future expedition planning, risk management, and safety protocols."
 format: pdf
 number-sections: true
 toc: true
@@ -169,7 +169,7 @@ create_plot(analysis_data, "height_range", "Height of the Peak")
 # Model {#sec-model}
 I used a Bayesian Logistic Regression model to find the probability that someone will successfully summit the Himalayan peak they are on the expedition for. Logistic regression is a method used for binary classification to predict the probability of a categorical dependent variable. 
 
-For my analysis, a logistic regression model will be used to model if the person will be successful on their attempt to summit the particular Himalayan peak. The model will be based on five independent demographic variables: `height of the peak`, `sex`, `age`, `seasons` and `solo` and the dependent variable will be `success`.
+My model will be based on five independent demographic variables: `height of the peak`, `sex`, `age`, `seasons` and `solo` and the dependent variable will be `success`.
 
 The logistic regression model I will be using is:
 \begin{equation}
@@ -188,8 +188,8 @@ $$
 $$
 where,
 
-- $\hat{p}$ represents the probability that someone will successfully complete the peak they are on the expedition for.
-- $\beta_0$ represents the intercept term of this logistical regression. It is the probability that someone will successfully complete the peak they are on the expedition for if the predictors' values are zero
+- $\hat{p}$ represents the probability that someone will successfully summit the peak they are on the expedition for.
+- $\beta_0$ represents the intercept term of this logistical regression. It is the probability that someone will successfully summit the peak they are on the expedition for if the predictors' values are zero
 - $\beta_1$ is the coefficient corresponding to height of the peak
 - $\beta_2$ is the coefficient corresponding to sex of the person
 - $\beta_3$ is the coefficients corresponding to age of the person
@@ -218,6 +218,8 @@ coefficients |> kable(digits = 2)
 ```
 @tbl-model-coefficients shows the coefficients for my Bayesian model along with the standard error and the 95% credible interval. The standard error (SE) is a measure of the precision with which a sample statistic estimates a population parameter. It quantifies the variability of sample statistics around the population parameter. A 95% credible interval means that there is a 95% probability that the true parameter lies within the interval, given the observed data and the model assumptions. 
 
+# Results {#sec-results}
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -234,51 +236,16 @@ ggplot(coefficients, aes(x = estimate, y = term)) +
   labs(x = "Coefficient Estimate", y = "Predictor Variable") + # Axis labels
   theme_minimal() # Minimal theme for better readability
 ``` 
-@fig-model-coefficients illustrates the coefficients and their associated 95% credible intervals for the predictor variables in the Bayesian model. Each point represents the estimated coefficient for a predictor variable, while the horizontal lines depict the credible interval around the estimate. Variables with coefficients to the right of zero indicate a positive association with the outcome variable, suggesting that an increase in the predictor variable corresponds to an increase in the outcome variable. Conversely, coefficients to the left of zero indicate a negative association, implying that an increase in the predictor variable is associated with a decrease in the outcome variable. These insights can help in understanding the direction and magnitude of the relationships between predictor variables and the outcome in the Bayesian model.
 
-# Results {#sec-results}
+@fig-model-coefficients illustrates the coefficients and their associated 95% credible intervals for the predictor variables in the Bayesian model. Each point represents the estimated coefficient for a predictor variable, while the horizontal lines depict the credible interval around the estimate. Variables with coefficients to the right of zero indicate a positive association with the outcome variable, suggesting that an increase in the predictor variable corresponds to an increase in the outcome variable. Conversely, coefficients to the left of zero indicate a negative association, implying that an increase in the predictor variable is associated with a decrease in the outcome variable. These insights can help in understanding the direction and magnitude of the relationships between predictor variables and the outcome in the Bayesian model. I removed the coefficient for age_range81-90 which according to @tbl-model-coefficients was very small leading to all other coefficients being uninterpretable in the plot.
+
+We see that the males have a slightly higher success probability compared to females. We also notice how expeditions in Summer and Winter have lesser success probability than Autumn whereas Spring has higher success probability than it. Additionally, we notice the success probabilities getting lower with increase in age.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| label: fig-sex
-#| fig-cap: Predicted Success Probability by Sex
-
-ggplot(predictions, aes(x = sex, y = success_probability, fill = sex)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Predicted Success Probability by Sex",
-       x = "Sex",
-       y = "Success Probability") +
-  theme_minimal()
-```
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| label: fig-age
-#| fig-cap: Predicted Success Probability by Age
-
-# Define custom order for age_range levels
-custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
-
-# Convert age_range to factor with custom order
-predictions$age_range <- factor(predictions$age_range, levels = custom_order)
-
-
-ggplot(predictions, aes(x = age_range, y = success_probability, fill = age_range)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Predicted Success Probability by Age",
-       x = "Age",
-       y = "Success Probability") +
-  theme_minimal()
-
-```
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| label: fig-subplots
+#| label: fig-age-sex
 #| fig-cap: Predicted Success Probability by Age and Sex
 
 # Define custom order for age_range levels
@@ -289,46 +256,32 @@ predictions$age_range <- factor(predictions$age_range, levels = custom_order)
 
 ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Predicted Success Probability by Age and Sex",
-       x = "Age",
+  labs(x = "Age",
        y = "Success Probability") +
-  facet_grid(sex ~ .) +  # Create subplots for each sex
+  facet_grid(sex ~ .) +
   theme_minimal()
 
 ```
+@fig-age-sex shows the predicted success probability according the the age and sex of the expedition member. We notice that the success probabilities over all ages tend to be slightly higher in males compared to females, just as we saw in @fig-model-coefficients. But, when combined with age we see there differences are not constant. We see that the difference in the success probabilities for people under 50 are very close to each other but for people aged 51 or above the difference is much larger. The success probabilities are pretty high, crossing 0.8 for younger individuals but starts declining with increase in age. The steep decline in category 81-90 might stem from the significant less number of expedition members in that age group leading to a less varied result.
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
-#| label: fig-subplots-height
-#| fig-cap: Predicted Success Probability by Height Range and Seasons
+#| label: fig-height-seasons
+#| fig-cap: Predicted Success Probability by Height of the Peak and Seasons
 
 ggplot(predictions, aes(x = height_range, y = success_probability, fill = seasons)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Predicted Success Probability by Height Range and Seasons",
-       x = "Height Range",
+  labs(x = "Height of the Peak",
        y = "Success Probability") +
-  facet_grid(seasons ~ .) +  # Create subplots for each season
-  theme_minimal()
+  facet_grid(seasons ~ .) + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+@fig-height-seasons shows the predicted success probability according the the height of the peak being ascended and the season of expedition. We notice that the success probabilities are pretty high for shorter mountain ranges and become lesser with increase in height. This might have to do with the fact that less higher peaks could be comparatively easier to summit. This, however, cannot be established as the trend as we see a non-pattern being followed for heights 6800 metres and above. We see that winter season expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. We also notice interesting trend as an interaction of these two factors. One such trend would be the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in Winter to around 0.6 in Autumn or Spring.
 
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| label: fig-subplots-sex-solo
-#| fig-cap: Predicted Success Probability by Sex and Solo Status
-
-ggplot(predictions, aes(x = sex, y = success_probability, fill = solo)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "Predicted Success Probability by Sex and Solo Status",
-       x = "Sex",
-       y = "Success Probability") +
-  facet_grid(solo ~ .) +  # Create subplots for each solo status
-  theme_minimal()
-```
 # Discussion {#sec-discussion}
 1) What is done in this paper? 
 2) What is something that we learn about the world?
@@ -366,6 +319,22 @@ Here is a glimpse of the dataset used for analysis
 #| 
 head(analysis_data)  %>%
   kable(digits = 2)
+```
+
+## Model summary
+
+## Hello
+```{r}
+#| label: fig-post_dist
+#| fig-cap: Posterior distribution for logistic regression model 
+#| echo: false
+#| warning: false
+#| message: false
+
+library(bayesplot)
+
+pp_check(expeditions_model) +
+  theme(legend.position = "bottom")
 ```
 
 # References
