@@ -63,7 +63,7 @@ main_data <- merged_data2 %>%
     )
   ) %>%
   # Select final columns
-  select(peak_id, height_range, seasons, sex, age_range, success, solo, died)
+  select(height_range, seasons, sex, age_range, success, solo, died)
 
 #### Save the cleaned data ####
 write_parquet(main_data, "data/analysis_data/expeditions.parquet")

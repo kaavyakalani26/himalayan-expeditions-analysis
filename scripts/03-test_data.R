@@ -23,15 +23,17 @@ if (any(is.na(analysis_data))) {
 }
 
 # Test 2: Check the number of columns
-if (ncol(analysis_data) == 8) {
-  print("Number of columns is 8.")
+if (ncol(analysis_data) == 7) {
+  print("Number of columns is 7.")
 } else {
-  print("Number of columns is not 8.")
+  print("Number of columns is not 7.")
 }
 
-# Test 3: Check the values in the height column are all positive
-if (all(analysis_data$height > 0)) {
-  print("Values in the 'height' column are positive.")
+# Test 3: Check the values in the height column are all valid
+heights <- c("5400 - 5749", "5750 - 6099", "6100 - 6449", "6450 - 6799", "6800 - 7149", "7150 - 7499", 
+             "7500 - 7849", "7850 - 8199", "8200 - 8549", "8550 - 8900")
+if (all(analysis_data$height_range %in% heights)) {
+  print("Values in the 'height' column are valid")
 } else {
   print("There are invalid values in the 'height' column.")
 }
@@ -52,7 +54,8 @@ if (all(analysis_data$sex %in% c('M', 'F'))) {
 }
 
 # Test 6: Check the values in the age column are all valid
-if (all(analysis_data$age > 0)) {
+ages <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
+if (all(analysis_data$age_range %in% ages)) {
   print("Values in the 'age' column are valid")
 } else {
   print("There are invalid values in the 'age' column.")
