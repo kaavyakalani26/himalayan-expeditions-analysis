@@ -28,7 +28,7 @@ library(kableExtra)
 library(arrow)
 
 expeditions_model <- readRDS(here("models/single_bay.rds"))
-analysis_data <- read_parquet("data/analysis_data/expeditions.parquet")
+analysis_data <- read_parquet(here("data/analysis_data/expeditions.parquet"))
 predictions <- read.csv(here("data/predictions/predictions.csv"))
 ```
 

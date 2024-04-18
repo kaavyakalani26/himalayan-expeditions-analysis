@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Cleans the raw data
 # Author: Kaavya Kalani
-# Date: 6 April 2024
+# Date: 18 April 2024
 # Contact: kaavya.kalani@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: None
@@ -11,23 +11,31 @@ library(tidyverse)
 library(arrow)
 
 #### Load and clean data ####
+# Read the raw data files
 peaks <- read.csv("data/raw_data/peaks.csv")
 expeditions <- read.csv("data/raw_data/expeditions.csv")
 members <- read.csv("data/raw_data/members.csv")
 
+# Merge expedition and member data based on expedition_id
 merged_data1 <- merge(expeditions, members, by = "expedition_id")
+
+# Select relevant columns and rename peak_id
 merged_data1 <- merged_data1 %>%
   select(peak_id.x, season.x, sex, age, success, solo, died) %>%
   rename(peak_id = peak_id.x)
 
+# Select relevant columns from the peaks data
 peaks <- peaks %>%
   select(peak_id, height_metres)
 
+# Merge the previously merged data with peaks data based on peak_id
 merged_data2 <- merge(merged_data1, peaks, by = "peak_id")
+
 main_data <- merged_data2 %>%
-  filter(!is.na(sex), !is.na(age)) %>%
+  filter(!is.na(sex), !is.na(age)) %>% # Filter out rows with missing values for sex or age
   rename(height = height_metres, seasons = season.x) %>%
   mutate(
+    # Create height range categories
     height_range = case_when(
       height >= 5400 & height < 5750 ~ "5400 - 5749",
       height >= 5750 & height < 6100 ~ "5750 - 6099",
@@ -41,6 +49,7 @@ main_data <- merged_data2 %>%
       height >= 8550 & height <= 8900 ~ "8550 - 8900",
       TRUE ~ as.character(height)
     ),
+    # Create age range categories
     age_range = case_when(
       age <= 18 ~ "Under 18",
       age > 18 & age <= 30 ~ "19-30",
@@ -53,7 +62,8 @@ main_data <- merged_data2 %>%
       TRUE ~ as.character(age)
     )
   ) %>%
-  select(peak_id, height_range, seasons, sex, age, age_range, success, solo, died)
+  # Select final columns
+  select(peak_id, height_range, seasons, sex, age_range, success, solo, died)
 
 #### Save the cleaned data ####
 write_parquet(main_data, "data/analysis_data/expeditions.parquet")
