@@ -5,7 +5,7 @@ author: Kaavya Kalani
 thanks: "Code and data supporting this analysis is available at: [https://github.com/kaavyakalani26/himalayan-expeditions-analysis](https://github.com/kaavyakalani26/himalayan-expeditions-analysis)"
 date: today
 date-format: long
-abstract: "This study analyses the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. I find a strong relation between height of the peak, sex, age, season of expedition, if it was a solo ascent, and the success in summitting. Young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase your chances of having a successful summit. The insights from this study aim to help future expedition planning, risk management, and safety protocols."
+abstract: "This study analyses the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. I find a strong relation between height of the peak, sex, age, season of expedition, if it was a solo ascent, and the success in summitting. Young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase one's chances of having a successful summit. The insights from this study aim to help future expedition planning, risk management, and safety protocols."
 format: pdf
 number-sections: true
 toc: true
@@ -41,9 +41,9 @@ My estimand is the relationship between different demographic, environmental and
 
 I use data from Alex Cookson’s datasets (link) which are sourced from The Himalayan Expedition records (link), to understand these factors and trends. This is done by leveraging a Bayesian Logistic Regression model and then predicting the probability of a successful attempt over various demographic and environmental factors.
 
-My analysis led to … (add what was found)
+My analysis shows how mountaineering is a highly male dominated activity. It highlights that young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase one's chances of having a successful summit. 
 
-The findings highlighted by this research has practical implications for expedition planning, risk management, and safety protocols. Ultimately, the study aims to improve decision-making in high-altitude mountaineering, making it safer and more informed in one of the world's most challenging environments.
+The findings highlighted by this research have practical implications for expedition planning, risk management, and safety protocols. Ultimately, the study aims to improve decision-making in high-altitude mountaineering, making it safer and more informed in one of the world's most challenging environments.
 
 The paper is further organized into four sections. @sec-data discusses how the dataset to be used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset used for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly, @sec-discussion talks about some interesting trends found in @sec-results in depth, link it to the real world and also highlight the weaknesses and future of my analysis.
 
