@@ -17,6 +17,7 @@ bibliography: references.bib
 #| warning: false
 #| message: false
 
+#### Workspace setup ####
 library(broom.mixed)
 library(tidyverse)
 library(dplyr)
@@ -27,6 +28,7 @@ library(here)
 library(kableExtra)
 library(arrow)
 
+#### Load necessary data and models ####
 expeditions_model <- readRDS(here("models/single_bay.rds"))
 analysis_data <- read_parquet(here("data/analysis_data/expeditions.parquet"))
 predictions <- read.csv(here("data/predictions/predictions.csv"))
@@ -81,12 +83,15 @@ Among the overall range of variables available, I chose the following to be incl
 #| label: fig-counts
 #| layout-ncol: 2
 
+# Function to generate the plots
 plot_bar <- function(data, x, x_label) {
+  # Check if x is "age_range" to customize the order of bars
   if (x == "age_range") {
     custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
     data[[x]] <- factor(data[[x]], levels = custom_order)
   }
 
+  # Create a bar plot 
   ggplot(data, aes_string(x = x)) +
     geom_bar(fill = "lightblue") +
     labs(x = x_label, y = "Count") +
@@ -94,6 +99,7 @@ plot_bar <- function(data, x, x_label) {
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
 
+# Create plots for each variable 
 plot_bar(analysis_data, "sex", "Sex")
 plot_bar(analysis_data, "solo", "Solo Status")
 plot_bar(analysis_data, "age_range", "Age")
@@ -112,9 +118,7 @@ plot_bar(analysis_data, "height_range", "Height of the Peak")
 #| label: fig-proportions
 #| layout-ncol: 2
 
-library(tidyr)
-
-# Define a function to create the plot for each variable
+# Function to create the plot for each variable
 create_plot <- function(data, x_var, x_label) {
   custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90")
 
@@ -209,9 +213,6 @@ The use of moderately wide priors can also help regularize the model, preventing
 #| message: false
 #| label: tbl-model-coefficients
 #| tbl-cap: Summary of the model
-#
-# # Create model summary
-# model_summary <- modelsummary(expeditions_model)
 
 # Extract coefficients
 coefficients <- broom::tidy(expeditions_model, conf.int = TRUE)
@@ -228,8 +229,10 @@ coefficients |> kable(digits = 2)
 #| label: fig-model-coefficients
 #| fig-cap: Coefficients of the model
 
+# Remove the coefficient for age_range81-90 as it is very small
 coefficients <- coefficients[coefficients$term != "age_range81-90", ]
 
+# Plot for the coefficients of the model
 ggplot(coefficients, aes(x = estimate, y = term)) +
   geom_point() + # Coefficient points
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high)) + # Confidence/Credible interval bars
@@ -255,6 +258,7 @@ custom_order <- c("Under 18", "19-30", "31-40", "41-50", "51-60", "61-70", "71-8
 # Convert age_range to factor with custom order
 predictions$age_range <- factor(predictions$age_range, levels = custom_order)
 
+# Plot for the predicted success probability by age and sex
 ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
@@ -273,6 +277,7 @@ ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
 #| label: fig-height-seasons
 #| fig-cap: Predicted Success Probability by Height of the Peak and Seasons
 
+# Plot for the predicted success probability by height of the peak and season of expedition
 ggplot(predictions, aes(x = height_range, y = success_probability, fill = seasons)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
@@ -319,14 +324,15 @@ Here is a glimpse of the dataset used for analysis
 #| message: false
 #| label: tbl-survey
 #| tbl-cap: Analysis dataset
-#|
+
+# Glimpse of the anaysis dataset
 head(analysis_data) %>%
   kable(digits = 2)
 ```
 
 ## Model summary
 
-## Hello
+## Posterior distribution
 ```{r}
 #| label: fig-post_dist
 #| fig-cap: Posterior distribution for logistic regression model
