@@ -5,7 +5,7 @@ author: Kaavya Kalani
 thanks: "Code and data supporting this analysis is available at: [https://github.com/kaavyakalani26/himalayan-expeditions-analysis](https://github.com/kaavyakalani26/himalayan-expeditions-analysis)"
 date: today
 date-format: long
-abstract: "This study analyses the relationship between various demographic, environmental and geographic factors and the probability of success in attempting to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. Young age, being male and embarking on the expedition in spring or autumn are some factors that increase one's chances of a successful summit. The insights from this study aim to assist in future expedition planning, risk management, and safety protocols."
+abstract: "This study analyses the relationship between various demographic, environmental and geographic factors and the probability of success in attempting to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is utilised to analyse the trends and factors influencing a successful summit. Young age, being male and embarking on the expedition in spring or autumn are some factors that increase one's chances of a successful summit. The insights from this study aim to assist in future expedition planning, risk management, and safety protocols."
 format: pdf
 number-sections: true
 toc: true
@@ -35,7 +35,7 @@ predictions <- read.csv(here("data/predictions/predictions.csv"))
 ```
 
 # Introduction
-Mountaineering, with its blend of adventure and challenge, has captivated explorers for generations. It represents a pinnacle of human endeavor, testing physical strength, mental fortitude, and strategic planning against some of the most formidable natural landscapes on Earth. Amidst the allure of conquering majestic peaks, a critical question arises: what factors contribute to the likelihood of a successful summit attempt? This paper delves into precisely this.
+Mountaineering, with its blend of adventure and challenge, has captivated explorers for generations. It represents a pinnacle of human endeavor, testing physical strength, mental fortitude, and strategic planning against some of the most formidable natural landscapes on Earth. Amidst the allure of conquering majestic peaks, a critical question arises: what factors contribute to the likelihood of a successful summit attempt? This paper tries to unravel precisely this.
 
 Numerous mountain ranges worldwide attract expedition enthusiasts, with the Himalayas, home to the highest peak, Mt. Everest, being one of the most renowned. This paper focuses on data from expeditions to the Himalayan mountain ranges in Nepal.
 
@@ -92,12 +92,22 @@ plot_bar <- function(data, x, x_label) {
     data[[x]] <- factor(data[[x]], levels = custom_order)
   }
 
+  # Custom labels for "sex" variable
+  sex_labels <- c("Female", "Male")
+
   # Create a bar plot
-  ggplot(data, aes_string(x = x)) +
+  p <- ggplot(data, aes_string(x = x)) +
     geom_bar(fill = "lightblue") +
     labs(x = x_label, y = "Count") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # If x is "sex", set custom labels
+  if (x == "sex") {
+    p <- p + scale_x_discrete(labels = sex_labels)
+  }
+
+  return(p)
 }
 
 # Create plots for each variable
@@ -146,6 +156,9 @@ create_plot <- function(data, x_var, x_label) {
 
   plot_data$success <- factor(plot_data$success, levels = c(TRUE, FALSE))
 
+  # Custom labels for "sex" variable
+  sex_labels <- c("Female", "Male")
+
   p <- ggplot(plot_data, aes(x = x_var, y = proportion, fill = factor(success))) +
     geom_bar(stat = "identity", position = "dodge") +
     scale_fill_manual(
@@ -156,6 +169,11 @@ create_plot <- function(data, x_var, x_label) {
     labs(x = x_label, y = "Proportion") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # If x is "sex", set custom labels
+  if (x_var == "sex") {
+    p <- p + scale_x_discrete(labels = sex_labels)
+  }
 
   return(p)
 }
@@ -259,9 +277,12 @@ ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
     y = "Success Probability"
   ) +
   facet_grid(sex ~ .) +
+  scale_fill_discrete(labels = c("Female", "Male")) +
   theme_minimal()
 ```
 @fig-age-sex shows the predicted success probability based on the age and sex of expedition members. It is evident that success probabilities are slightly higher for males across all ages, consistent with the findings in @fig-model-coefficients. However, when age is factored in, these differences vary. For individuals under 50, the success probabilities for males and females are similar, but for those aged 51 and above, the gap widens significantly. Success probabilities are notably high, exceeding 0.8 for younger individuals but decrease with age. The sharp decline in the 81-90 age category may be attributed to the smaller number of expedition members in that age group, resulting in less reliable outcomes.
+
+\newpage
 
 ```{r}
 #| echo: false
@@ -285,24 +306,26 @@ ggplot(predictions, aes(x = height_range, y = success_probability, fill = season
 
 Winter expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. The interaction of these two factors provide an interesting insight. It is observed that the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in winter to around 0.6 in autumn or spring.
 
+\newpage
+
 # Discussion {#sec-discussion}
 ## Male dominance in mountaineering
 Mountaineering, as evident by the data, presents a significant gender gap, with men outnumbering women by nearly sixfold in expedition participation. @fig-counts shows the counts of the independent variables and it is observed that there are almost six times more male expedition members. This gender gap underscores the sport's male-dominated nature.
 
-The physical demands of mountaineering, requiring exceptional strength and endurance, align with biological differences between sexes, as men typically have greater muscle mass and strength. This may explain why men are more drawn to mountaineering due to their physical advantages. To have the same physical strength, a woman would need to work much harder.
+The physical demands of mountaineering, requiring exceptional strength and endurance [@Strength], align with biological differences between sexes, as men typically have greater muscle mass and strength [@Sex]. This may explain why men are more drawn to mountaineering due to their physical advantages. To have the same physical strength, a woman would need to work much harder.
 
-Despite the numerical difference, an interesting observation emerges from the analysis of success probabilities. @fig-model-coefficients and @fig-age-sex show how the success probabilities of men and women are not extremelyx different. While men have a slightly higher likelihood of reaching the summit, women show commendable success rates despite their lower representation in expeditions. 
+Despite the numerical difference, an interesting observation emerges from the analysis of success probabilities. @fig-model-coefficients and @fig-age-sex show how the success probabilities of men and women are not extremely different. While men have a slightly higher likelihood of reaching the summit, women show commendable success rates despite their lower representation in expeditions. 
 
 This suggests that factors beyond sheer physical strength contribute to summit success, and one of those factors can be will power. As mentioned, women often face the reality of needing to exert greater effort due to inherent physical differences, coupled with the underrepresentation within mountaineering circles. The notable success rates among women despite these challenges highlight not only their physical strength but also underscore their exceptional mental resilience and inner motivation.
 
 These findings support the need for initiatives to promote gender diversity in mountaineering. Implementing programs and incentives tailored specifically for women can help overcome barriers, encourage more participation, and bring diverse perspectives and experiences to the mountaineering community.
 
 ## Spring and Autumn are the best time for expeditions
-Autumn and spring, as transitional seasons, provide favorable conditions for mountaineering expeditions. The periods offer moderate temperatures and more stable weather patterns compared to the extremes of summer and winter. @fig-model-coefficients and @fig-height-seasons show the difference in probabilities of success by seasons and highlight highest chances of success in spring followed by autumn. 
+Autumn and spring, as transitional seasons, provide favorable conditions for mountaineering expeditions. The periods offer moderate temperatures and more stable weather patterns compared to the extremes of summer and winter. @fig-model-coefficients and @fig-height-seasons show the difference in probabilities of success by seasons and highlight higher chances of success in spring and autumn. @Season provides tips for summit success when climbing Mt. Everest and suggest that the best time to climb it is in the Autumn/ Fall season. This is in-line with our findings.
 
 Conversely, summer and winter present significant challenges for mountaineers. Summer brings the risks of intense heat and thunderstorms, increasing the likelihood of rockfall and other hazards while winter conditions are characterized by extreme cold, high winds, heavy snowfall, and increased avalanche danger, making ascent and descent more difficult and hazardous. As a result, winter is generally considered the least desirable season for mountaineering expeditions.
 
-In conclusion, autumn and spring are the optimal seasons for mountaineering expeditions, and season selection is a crucial factor in expedition planning.
+In conclusion, autumn and spring are the optimal seasons for mountaineering expeditions, and season selection is an important factor in expedition planning.
 
 ## Chances of success decline with increase in age
 Age is a key factor in mountaineering success, with success rates typically decreasing with increase in age. 
@@ -311,9 +334,13 @@ Age is a key factor in mountaineering success, with success rates typically decr
 
 Moreover, age-related health issues like cardiovascular problems, joint stiffness, and decreased bone density can further hinder older climbers' ability to meet the physical demands of mountaineering. These factors contribute to a decline in overall performance and increase the likelihood of encountering difficulties during expeditions.
 
-While age-related decline in mountaineering performance is noticeable, it is essential to recognize that success in mountaineering is not solely determined by physical capabilities. Experience, skill, preparation, and mindset also play crucial roles in summit success. Older climbers can compensate for physiological limitations through greater experience, strategic planning, and mental resilience, enabling them to pursue their mountaineering goals despite age-related challenges.
+@Age highlight some of the same issues and factors when analysing endurance performance in masters athletes.
+
+While age-related decline in mountaineering performance is noticeable, it is essential to recognize that success in mountaineering is not solely determined by physical capabilities. Experience, skill, preparation, and mindset also play an important roles in summit success. Older climbers can compensate for physiological limitations through greater experience, strategic planning, and mental resilience, enabling them to pursue their mountaineering goals despite age-related challenges.
 
 In summary, age-related impacts on mountaineering success are significant, with success rates generally decreasing as climbers age. However, older climbers can overcome some of these challenges through experience, skill, strength training, and a strong mindset, allowing them to continue enjoying mountaineering well into their later years.
+
+\newpage
 
 ## Weaknesses and Limitations
 While my analysis offers valuable insights into the factors influencing a successful summit, it is important to acknowledge the weaknesses and limitations.
@@ -331,7 +358,7 @@ Analysing the number of attempts made by climbers before a successful summit can
 
 Developing a metric to measure climbers' preparedness can quantify the various aspects of readiness, including physical fitness, technical skills, mental resilience, and logistical planning. Understanding the relationship between preparedness levels and summit success can guide training and preparation efforts.
 
-Group dynamics play a crucial role in mountaineering, affecting decision-making, safety, resource allocation, and overall team morale. Studying how group size influences summit success can provide insights into optimal team composition, leadership structures, and communication strategies. It can also highlight the trade-offs between the benefits of larger teams and the challenges of coordinating and managing them effectively.
+Group dynamics play an important role in mountaineering, affecting decision-making, safety, resource allocation, and overall team morale. Studying how group size influences summit success can provide insights into optimal team composition, leadership structures, and communication strategies. It can also highlight the trade-offs between the benefits of larger teams and the challenges of coordinating and managing them effectively.
 
 
 # Appendix {#sec-appendix}
@@ -387,6 +414,7 @@ coefficients |> kable(digits = 2)
 #| label: fig-post
 #| fig-cap: Posterior distribution for logistic regression model
 
+# Posterior check
 pp_check(expeditions_model) +
   theme(legend.position = "bottom")
 ``` 
@@ -415,7 +443,6 @@ posterior_vs_prior(expeditions_model) +
 ## Markov chain Monte Carlo (MCMC) Convergence Check
 ```{r}
 #| echo: false
-#| eval: true
 #| message: false
 #| warning: false
 #| label: fig-trace1
@@ -423,6 +450,7 @@ posterior_vs_prior(expeditions_model) +
 #| fig-subcap: ["Intercept", "sexM", "soloTRUE", "seasonsSpring", "seasonsSummer", "seasonsWinter", "age_rangeUnder 18",  "age_range31-40", "age_range41-50", "age_range51-60", "age_range61-70", "age_range71-80", "age_range81-90"]
 #| layout-ncol: 3
 
+# Split plots as all at once is unreadable
 plot(expeditions_model, "trace", "(Intercept)")
 plot(expeditions_model, "trace", "sexM")
 plot(expeditions_model, "trace", "soloTRUE")
@@ -439,7 +467,6 @@ plot(expeditions_model, "trace", "age_range81-90")
 ```
 ```{r}
 #| echo: false
-#| eval: true
 #| message: false
 #| warning: false
 #| label: fig-trace2
@@ -460,7 +487,6 @@ plot(expeditions_model, "trace", "height_range8550 - 8900")
 
 ```{r}
 #| echo: false
-#| eval: true
 #| message: false
 #| warning: false
 #| label: fig-rhat
@@ -469,5 +495,7 @@ plot(expeditions_model, "trace", "height_range8550 - 8900")
 plot(expeditions_model, "rhat")
 ```
 My model, modelled using `rstanarm` [@citeRstanarm] uses a sampling algorithm called Markov chain Monte Carlo (MCMC) to obtain samples from the posterior distributions of interest. @fig-trace1, @fig-trace2 and @fig-rhat are used to check for the existence of signs that the algorithm ran into issues. @fig-trace1 and @fig-trace2 does not suggest anything out of the ordinary and everything in @fig-rhat is close to 1 suggesting no problem as well.
+
+\newpage
 
 # References
