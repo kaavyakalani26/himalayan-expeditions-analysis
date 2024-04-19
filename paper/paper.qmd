@@ -41,7 +41,7 @@ There are numerous mountain ranges around the world where people embark on exped
 
 My estimand is the relationship between different demographic, environmental and geographic factors (such as height of the peak, sex, age, season of expedition and if it was a solo ascent) and the successfulness of climbing a summit. Using the analysis dataset, my goal is to identify trends and factors that influence a successful expedition and eventually conclude what factors help in a more successful attempt.
 
-I use data from Alex Cookson’s datasets (link) which are sourced from The Himalayan Expedition records (link), to understand these factors and trends. This is done by leveraging a Bayesian Logistic Regression model and then predicting the probability of a successful attempt over various demographic and environmental factors.
+I use data from @Cookson which are sourced from The Himalayan Expedition records (@Salisbury), to understand these factors and trends. This is done by leveraging a Bayesian Logistic Regression model and then predicting the probability of a successful attempt over various demographic and environmental factors.
 
 My analysis shows how mountaineering is a highly male dominated activity. It highlights that young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase one's chances of having a successful summit. 
 
@@ -53,13 +53,13 @@ The paper is further organized into four sections. @sec-data discusses how the d
 For this analysis, I have combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `arrow` [@citeArrow], `broom.mixed` [@citeBroomMixed], `modelsummary` [@citeModelSummary] and `kableExtra` [@citeKableExtra].
 
 ## Analysis Dataset
-The raw datasets were obtained from Alex Cookson's datasets (link). I chose the ones cleaned for Himalayan expeditions. Alex got his datasets from The Himalayan Database (link). 
+The raw datasets were obtained from @Cookson. I chose the ones cleaned for Himalayan expeditions. Cookson got his datasets from The Himalayan Database (@Salisbury). 
 
 The Himalayan Database is a compilation of records for all expeditions that have climbed in the Nepal Himalaya. The database is based on the expedition archives of Elizabeth Hawley, a longtime journalist based in Kathmandu, and it is supplemented by information gathered from books, alpine journals and correspondence with Himalayan climbers.
 
 The original database currently covers all expeditions from 1905 through Spring-Summer 2023 to the most significant mountaineering peaks in Nepal. Also included are expeditions to both sides of border peaks such as Everest, Cho Oyu, Makalu and Kangchenjunga as well as to some smaller border peaks. Data on expeditions to trekking peaks are included for early attempts, first ascents and major accidents. The updates to this database are published bi-annually. 
 
-My dataset derived from Alex's contains the entries from 1905 through Spring 2019.
+My dataset derived from Cookson's contains the entries from 1905 through Spring 2019.
 
 The three datasets I considered included information about all peaks, all expeditions on those peaks and all members on those expeditions. The data from these three datasets are combined to form the main analysis dataset. 
 A person becomes an entry in my analysis dataset if, between 1905 and Spring 2019, they attempted to climb any one of the many Himalayan peaks in Nepal. It also included expeditions to both sides of border peaks as mentioned before. 

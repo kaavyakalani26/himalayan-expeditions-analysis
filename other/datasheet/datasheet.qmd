@@ -22,7 +22,7 @@ Extract of the questions from @gebru2021datasheets.
     - Kaavya Kalani, while studying at the University of Toronto.
     
 3. *Who funded the creation of the dataset? If there is an associated grant, please provide the name of the grantor and the grant name and number.*
-    - No funding was received for this project.
+    - No funding was received for this project. 
     
 4. *Any other comments?*
     - No.
@@ -84,10 +84,10 @@ Extract of the questions from @gebru2021datasheets.
 **Collection process**
 
 1. *How was the data associated with each instance acquired? Was the data directly observable (for example, raw text, movie ratings), reported by subjects (for example, survey responses), or indirectly inferred/derived from other data (for example, part-of-speech tags, model-based guesses for age or language)? If the data was reported by subjects or indirectly inferred/derived from other data, was the data validated/verified? If so, please describe how.*
-	- The data was obtained by cleaning the dataset's provided by Alex Cookson: (link). Their datasets were derived from The Himalayan Database (link). The Himalayan Database is a compilation of records for all expeditions that have climbed in the Nepal Himalaya. The database is based on the expedition archives of Elizabeth Hawley, a longtime journalist based in Kathmandu, and it is supplemented by information gathered from books, alpine journals and correspondence with Himalayan climbers.
+	- The data was obtained by cleaning the dataset's provided on Github by @Cookson. Their datasets were derived from The Himalayan Database. The Himalayan Database is a compilation of records for all expeditions that have climbed in the Nepal Himalaya. The database is based on the expedition archives of Elizabeth Hawley, a longtime journalist based in Kathmandu, and it is supplemented by information gathered from books, alpine journals and correspondence with Himalayan climbers.
 	
 2. *What mechanisms or procedures were used to collect the data (for example, hardware apparatuses or sensors, manual human curation, software programs, software APIs)? How were these mechanisms or procedures validated?*
-	- The csv files provided by Alex Cookson (link) were downloaded and processed. The cleaning and processing involved natural joining the three datasets and cleaning them to satisfy the analysis needs.
+	- The csv files provided by @Cookson were downloaded and processed. The cleaning and processing involved natural joining the three datasets and cleaning them to satisfy the analysis needs.
 	
 3. *If the dataset is a sample from a larger set, what was the sampling strategy (for example, deterministic, probabilistic with specific sampling probabilities)?*
 	- Dataset is not a sample.
