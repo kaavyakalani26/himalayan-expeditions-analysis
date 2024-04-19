@@ -14,7 +14,6 @@ packages <- c(
   "dplyr",
   "knitr",
   "ggplot2",
-  "modelsummary",
   "here",
   "kableExtra",
   "arrow"

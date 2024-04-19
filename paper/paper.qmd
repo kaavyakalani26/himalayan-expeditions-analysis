@@ -23,10 +23,10 @@ library(tidyverse)
 library(dplyr)
 library(knitr)
 library(ggplot2)
-library(modelsummary)
 library(here)
 library(kableExtra)
 library(arrow)
+library(rstanarm)
 
 #### Load necessary data and models ####
 expeditions_model <- readRDS(here("models/single_bay.rds"))
@@ -92,7 +92,7 @@ plot_bar <- function(data, x, x_label) {
     data[[x]] <- factor(data[[x]], levels = custom_order)
   }
 
-  # Create a bar plot 
+  # Create a bar plot
   ggplot(data, aes_string(x = x)) +
     geom_bar(fill = "lightblue") +
     labs(x = x_label, y = "Count") +
@@ -100,7 +100,7 @@ plot_bar <- function(data, x, x_label) {
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
 
-# Create plots for each variable 
+# Create plots for each variable
 plot_bar(analysis_data, "sex", "Sex")
 plot_bar(analysis_data, "solo", "Solo Status")
 plot_bar(analysis_data, "age_range", "Age")
@@ -108,7 +108,7 @@ plot_bar(analysis_data, "seasons", "Season")
 plot_bar(analysis_data, "height_range", "Height of the Peak")
 ```
 
-@fig-counts displays the counts for various variables I will be modelling. We see that there are significantly higher men than women. This shows the existence of a gender imbalance skewed towards men in mountaineering in the Himalayas. Additionally, most expedition members opt not to attempt solo ascents and fall within the middle-aged range. Lastly, we see the peak expedition seasons are the more pleasant autumn and spring over the extreme seasons like summer and winter. These count disparities should be considered when analysing success proportions.
+@fig-counts displays the counts for various variables I will be modelling. The plot shows there are significantly higher men than women. This shows the existence of a gender imbalance skewed towards men in mountaineering in the Himalayas. Additionally, most expedition members opt not to attempt solo ascents and fall within the middle-aged range. Lastly, it can be seen that the peak expedition seasons are the more pleasant autumn and spring over the extreme seasons like summer and winter. These count disparities should be considered when analysing success proportions.
 
 ```{r}
 #| echo: false
@@ -168,7 +168,7 @@ create_plot(analysis_data, "seasons", "Season")
 create_plot(analysis_data, "height_range", "Height of the Peak")
 ```
 
-@fig-proportions shows the proportion of expedition members who had a successful outcome or died during their expedition. For sex, we see that more men had successful expeditions compared to women. Moreover, individuals who embark on solo expeditions have a higher mortality rate, potentially explaining the difference in the number of people attempting solo ascent observed earlier. Some other trends that can be observed are that success rates decline with age, and winter contributes to the most deaths. The success and death proportions based on the height of the peak are very varied and do not follow a specific trend. This goes to show that just the height of the peak alone doesn't define the probability of having a successful summit but there are other factors that contribute to it.
+@fig-proportions shows the proportion of expedition members who had a successful outcome or died during their expedition. For sex, it is observed that more men had successful expeditions compared to women. Moreover, individuals who embark on solo expeditions have a higher mortality rate, potentially explaining the difference in the number of people attempting solo ascent observed earlier. Some other trends that can be observed are that success rates decline with age, and winter contributes to the most deaths. The success and death proportions based on the height of the peak are very varied and do not follow a specific trend. This goes to show that just the height of the peak alone doesn't define the probability of having a successful summit but there are other factors that contribute to it.
 
 \newpage
 
@@ -206,7 +206,9 @@ In my model, normal priors with a mean of 0 and a standard deviation of 2.5 are 
 
 The chosen priors allow the data to largely determine the posterior distribution as they are relatively non-informative. They don't heavily influence the results unless the data provide strong evidence to the contrary.
 
-The use of moderately wide priors can also help regularize the model, preventing overfitting and providing more stable estimates, particularly when dealing with limited data.
+The use of moderately wide priors can also help regularize the model, preventing overfitting and providing more stable estimates, particularly when dealing with limited data. 
+
+Model coefficients with their standard errors, posterior checks for the model and convergence checks for the model can be found in @sec-appendix
 
 # Results {#sec-results}
 
@@ -285,7 +287,7 @@ Winter expeditions have lower success probabilities, probably owning to the extr
 
 # Discussion {#sec-discussion}
 ## Male dominance in mountaineering
-Mountaineering, as evident by the data, presents a significant gender gap, with men outnumbering women by nearly sixfold in expedition participation. @fig-counts shows us the counts of our independent variables and if we look at sex, we notice there are almost six times more male expedition members. This gender gap underscores the sport's male-dominated nature.
+Mountaineering, as evident by the data, presents a significant gender gap, with men outnumbering women by nearly sixfold in expedition participation. @fig-counts shows the counts of the independent variables and it is observed that there are almost six times more male expedition members. This gender gap underscores the sport's male-dominated nature.
 
 The physical demands of mountaineering, requiring exceptional strength and endurance, align with biological differences between sexes, as men typically have greater muscle mass and strength. This may explain why men are more drawn to mountaineering due to their physical advantages. To have the same physical strength, a woman would need to work much harder.
 
@@ -316,12 +318,12 @@ In summary, age-related impacts on mountaineering success are significant, with 
 ## Weaknesses and Limitations
 While my analysis offers valuable insights into the factors influencing a successful summit, it is important to acknowledge the weaknesses and limitations.
 
-Firstly, some success probabilities should be viewed with skepticism due to potential inaccuracies. Discrepancies in the counts of different categories may lead to imprecise success probabilities. For instance, the number of individuals attempting a solo ascent was significantly lower than those in group ascents. However, our model coefficients indicate for solo ascents was higher. This could create a misconception that solo ascents have better chances of success, potentially influencing more people to choose this option without considering other contributing factors. These probabilities may be influenced by the limited sample size of solo ascents, which lacks diverse data to account for confounding variables. There might be other factors which play a role like will power. Individuals opting for solo expeditions likely possess high levels of determination which can be a confounding factor playing into their success.
+Firstly, some success probabilities should be viewed with skepticism due to potential inaccuracies. Discrepancies in the counts of different categories may lead to imprecise success probabilities. For instance, the number of individuals attempting a solo ascent was significantly lower than those in group ascents. However, my model coefficients indicate for solo ascents was higher. This could create a misconception that solo ascents have better chances of success, potentially influencing more people to choose this option without considering other contributing factors. These probabilities may be influenced by the limited sample size of solo ascents, which lacks diverse data to account for confounding variables. There might be other factors which play a role like will power. Individuals opting for solo expeditions likely possess high levels of determination which can be a confounding factor playing into their success.
 
-Additionally, while we focused on focused on a few factors, there are numerous other variables that could impact the likelihood of a successful summit. Nationality and group size were two factors which were available in the raw data and I believed were factors which could have played a significant difference. These were later removed due to the lack of consistency in those variable’s. For instance, the way the number of members were reported differed from record to record. As the dataset also included the people summiting the other side of border peaks, some countries reported this number differently than others. For expeditions in Nepal, this was usually the number of foreigners listed on the expedition permit whereas in China, this was usually the number of non-hired members.
+Additionally, while I focused on focused on a few factors, there are numerous other variables that could impact the likelihood of a successful summit. Nationality and group size were two factors which were available in the raw data and I believed were factors which could have played a significant difference. These were later removed due to the lack of consistency in those variable’s. For instance, the way the number of members were reported differed from record to record. As the dataset also included the people summiting the other side of border peaks, some countries reported this number differently than others. For expeditions in Nepal, this was usually the number of foreigners listed on the expedition permit whereas in China, this was usually the number of non-hired members.
 
 ## Future Directions
-Moving forward, additional research is necessary to address the limitations discussed and improve the dataset to enhance our understanding of factors contributing to a successful summit. Including more diverse information can help uncover additional factors influencing a successful summit. Some of these factors that can be explored would be nationality of the person, attempt number, a metric for that could measure their level of preparedness and group size. 
+Moving forward, additional research is necessary to address the limitations discussed and improve the dataset to enhance the understanding of factors contributing to a successful summit. Including more diverse information can help uncover additional factors influencing a successful summit. Some of these factors that can be explored would be nationality of the person, attempt number, a metric for that could measure their level of preparedness and group size. 
 
 Nationality can play a role as the cultural background and national resources can play a significant role in shaping an individual's climbing experience. Different countries may have different levels of access to training facilities, equipment, and support networks for climbers. Additionally, genetic differences between individuals may also play a role. 
 
@@ -332,7 +334,7 @@ Developing a metric to measure climbers' preparedness can quantify the various a
 Group dynamics play a crucial role in mountaineering, affecting decision-making, safety, resource allocation, and overall team morale. Studying how group size influences summit success can provide insights into optimal team composition, leadership structures, and communication strategies. It can also highlight the trade-offs between the benefits of larger teams and the challenges of coordinating and managing them effectively.
 
 
-# Appendix
+# Appendix {#sec-appendix}
 
 ## Cleaning
 For the analysis data, the cleaning steps I took were:
@@ -385,11 +387,8 @@ coefficients |> kable(digits = 2)
 #| label: fig-post
 #| fig-cap: Posterior distribution for logistic regression model
 
-library(bayesplot)
-
 pp_check(expeditions_model) +
   theme(legend.position = "bottom")
-
 ``` 
 
 ```{r}
@@ -399,24 +398,17 @@ pp_check(expeditions_model) +
 #| label: fig-prior-post
 #| fig-cap: Comparing prior distribution with posterior distribution
 
-library(broom)
-library(broom.mixed)
-library(knitr)
-library(modelsummary)
-library(purrr)
-library(rstanarm)
-library(testthat)
-library(tidyverse)
-
 posterior_vs_prior(expeditions_model) +
   theme_minimal() +
-  theme(axis.text.x=element_text(hjust=1, vjust=0.5),
-        text=element_text(size=8)) +
-  guides(color = guide_legend(ncol = 6))+
+  theme(
+    axis.text.x = element_text(hjust = 1, vjust = 0.5),
+    text = element_text(size = 8)
+  ) +
+  guides(color = guide_legend(ncol = 6)) +
   theme(legend.position = "bottom") +
   coord_flip()
 ```
-@fig-post and @fig-prior-post are used to understand assess the quality of our model. 
+@fig-post and @fig-prior-post are used to understand assess the quality of my model. 
 
 @fig-post is the result of a posterior predictive check and is used to compare the actual outcome variable with simulations from the posterior distribution. @fig-prior-post is the result of comparing the posterior with the prior to see how much the estimates change once data are taken into account. Both these results support the model doing a good job of fitting the data.
 
@@ -426,12 +418,44 @@ posterior_vs_prior(expeditions_model) +
 #| eval: true
 #| message: false
 #| warning: false
-#| label: fig-trace
+#| label: fig-trace1
 #| fig-cap: "Trace plot"
- 
-layout(matrix(1:6, ncol = 3))
-plot(expeditions_model, "trace")
+#| fig-subcap: ["Intercept", "sexM", "soloTRUE", "seasonsSpring", "seasonsSummer", "seasonsWinter", "age_rangeUnder 18",  "age_range31-40", "age_range41-50", "age_range51-60", "age_range61-70", "age_range71-80", "age_range81-90"]
+#| layout-ncol: 3
 
+plot(expeditions_model, "trace", "(Intercept)")
+plot(expeditions_model, "trace", "sexM")
+plot(expeditions_model, "trace", "soloTRUE")
+plot(expeditions_model, "trace", "seasonsSpring")
+plot(expeditions_model, "trace", "seasonsSummer")
+plot(expeditions_model, "trace", "seasonsWinter")
+plot(expeditions_model, "trace", "age_rangeUnder 18")
+plot(expeditions_model, "trace", "age_range31-40")
+plot(expeditions_model, "trace", "age_range41-50")
+plot(expeditions_model, "trace", "age_range51-60")
+plot(expeditions_model, "trace", "age_range61-70")
+plot(expeditions_model, "trace", "age_range71-80")
+plot(expeditions_model, "trace", "age_range81-90")
+```
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-trace2
+#| fig-cap: "Trace plot"
+#| fig-subcap: ["height_range5750 - 6099", "height_range6100 - 6449", "height_range6450 - 6799", "height_range6800 - 7149", "height_range7150 - 7499", "height_range7500 - 7849", "height_range7850 - 8199", "height_range8200 - 8549", "height_range8550 - 8900"]
+#| layout-ncol: 3
+
+plot(expeditions_model, "trace", "height_range5750 - 6099")
+plot(expeditions_model, "trace", "height_range6100 - 6449")
+plot(expeditions_model, "trace", "height_range6450 - 6799")
+plot(expeditions_model, "trace", "height_range6800 - 7149")
+plot(expeditions_model, "trace", "height_range7150 - 7499")
+plot(expeditions_model, "trace", "height_range7500 - 7849")
+plot(expeditions_model, "trace", "height_range7850 - 8199")
+plot(expeditions_model, "trace", "height_range8200 - 8549")
+plot(expeditions_model, "trace", "height_range8550 - 8900")
 ```
 
 ```{r}
@@ -444,6 +468,6 @@ plot(expeditions_model, "trace")
 
 plot(expeditions_model, "rhat")
 ```
-My model, modelled using `rstanarm` [@citeRstanarm] uses a sampling algorithm called Markov chain Monte Carlo (MCMC) to obtain samples from the posterior distributions of interest. @fig-trace and @fig-rhat are used to check for the existence of signs that the algorithm ran into issues. @fig-trace does not suggest anything out of the ordinary and everything in @fig-rhat is close to 1 suggesting no problem as well.
+My model, modelled using `rstanarm` [@citeRstanarm] uses a sampling algorithm called Markov chain Monte Carlo (MCMC) to obtain samples from the posterior distributions of interest. @fig-trace1, @fig-trace2 and @fig-rhat are used to check for the existence of signs that the algorithm ran into issues. @fig-trace1 and @fig-trace2 does not suggest anything out of the ordinary and everything in @fig-rhat is close to 1 suggesting no problem as well.
 
 # References
