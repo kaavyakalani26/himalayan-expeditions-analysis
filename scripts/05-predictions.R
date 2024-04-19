@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Creates prediction dataset to use in Results of the paper
+# Purpose: Creates prediction dataset to use in the Results section of the paper
 # Author: Kaavya Kalani
 # Date: 18 April 2024
 # Contact: kaavya.kalani@mail.utoronto.ca
