@@ -5,7 +5,7 @@ author: Kaavya Kalani
 thanks: "Code and data supporting this analysis is available at: [https://github.com/kaavyakalani26/himalayan-expeditions-analysis](https://github.com/kaavyakalani26/himalayan-expeditions-analysis)"
 date: today
 date-format: long
-abstract: "This study analyses the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. I find a strong relation between height of the peak, sex, age, season of expedition, if it was a solo ascent, and the success in summitting. Young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase one's chances of having a successful summit. The insights from this study aim to help future expedition planning, risk management, and safety protocols."
+abstract: "This study analyses the relationship between various demographic, environmental and geographic factors and the probability of success in attempting to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. Young age, being male and embarking on the expedition in spring or autumn are some factors that increase one's chances of a successful summit. The insights from this study aim to assist in future expedition planning, risk management, and safety protocols."
 format: pdf
 number-sections: true
 toc: true
@@ -35,44 +35,45 @@ predictions <- read.csv(here("data/predictions/predictions.csv"))
 ```
 
 # Introduction
-Mountaineering, with its blend of adventure and challenge, has captivated explorers for generations. It represents a pinnacle of human endeavor, testing physical prowess, mental fortitude, and strategic planning against some of the most formidable natural landscapes on Earth. Amidst the allure of conquering these majestic peaks, lies a critical question: what factors contribute to the likelihood of a successful summit attempt? This paper delves into precisely this inquiry.
+Mountaineering, with its blend of adventure and challenge, has captivated explorers for generations. It represents a pinnacle of human endeavor, testing physical strength, mental fortitude, and strategic planning against some of the most formidable natural landscapes on Earth. Amidst the allure of conquering majestic peaks, a critical question arises: what factors contribute to the likelihood of a successful summit attempt? This paper delves into precisely this.
 
-There are numerous mountain ranges around the world where people embark on expeditions. One of the most famous mountain ranges are the Himalayas, which also consist of the highest mountain peak in the world, Mt. Everest. My paper uses the data from expeditions to the Himalayan mountain ranges in Nepal.
+Numerous mountain ranges worldwide attract expedition enthusiasts, with the Himalayas, home to the highest peak, Mt. Everest, being one of the most renowned. This paper focuses on data from expeditions to the Himalayan mountain ranges in Nepal.
 
-My estimand is the relationship between different demographic, environmental and geographic factors (such as height of the peak, sex, age, season of expedition and if it was a solo ascent) and the successfulness of climbing a summit. Using the analysis dataset, my goal is to identify trends and factors that influence a successful expedition and eventually conclude what factors help in a more successful attempt.
+My estimand is the relationship between various demographic, environmental and geographic factors (such as the height of the peak, sex, age, season of the expedition and if it was a solo ascent) and the success of an expedition. By analysing the dataset, my goal is to identify trends and factors influencing successful expeditions and determine which factors contribute to a higher likelihood of success.
 
-I use data from @Cookson which are sourced from The Himalayan Expedition records (@Salisbury), to understand these factors and trends. This is done by leveraging a Bayesian Logistic Regression model and then predicting the probability of a successful attempt over various demographic and environmental factors.
+Data sourced from @Cookson, based on The Himalayan Expedition records [@Salisbury], is utilized  to understand these factors and trends. A Bayesian Logistic Regression model is employed to predict the probability of a successful attempt based on demographic, environmental and geographic factors.
 
-My analysis shows how mountaineering is a highly male dominated activity. It highlights that young age, being a man and embarking on the expedition in Spring or Autumn are some factors which increase one's chances of having a successful summit. 
+My analysis reveals that mountaineering is a predominantly male-dominated activity, with factors such as young age, male gender, and expeditions in spring or autumn increasing the chances of having a successful summit.
 
-The findings highlighted by this research have practical implications for expedition planning, risk management, and safety protocols. Ultimately, the study aims to improve decision-making in high-altitude mountaineering, making it safer and more informed in one of the world's most challenging environments.
+The findings of this research have practical implications for expedition planning, risk management, and safety protocol aiming to enhance decision-making in high-altitude mountaineering, making it safer and more informed in one of the world's most challenging environments.
 
-The paper is further organized into four sections. @sec-data discusses how the dataset to be used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset used for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly, @sec-discussion talks about some interesting trends found in @sec-results in depth, link it to the real world and also highlight the weaknesses and future of my analysis.
+The paper is further organized into four sections. @sec-data discusses how the dataset used for the analysis was obtained and pre-processed. I will explain the variables of interest in the dataset used for the analysis. @sec-model describes the model being used for the analysis. @sec-results then highlights and discusses the trends and associations found during the analysis. Lastly, @sec-discussion talks about some interesting trends found in @sec-results in depth, linking it to the real world and also highlights the weaknesses and future of my analysis.
 
 # Data {#sec-data}
-For this analysis, I have combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `arrow` [@citeArrow], `broom.mixed` [@citeBroomMixed], `modelsummary` [@citeModelSummary] and `kableExtra` [@citeKableExtra].
+For this analysis, I have combined three datasets into one, which is used for analysis. The datasets were cleaned and analysed using the statistical programming software `R` [@citeR] along with the help of `tidyverse` [@citeTidyverse], `knitr` [@citeKnitr], `ggplot2` [@citeGgplot], `here` [@citeHere], `dplyr` [@citeDplyr], `rstanarm` [@citeRstanarm], `arrow` [@citeArrow], `broom.mixed` [@citeBroomMixed] and `kableExtra` [@citeKableExtra].
 
 ## Analysis Dataset
-The raw datasets were obtained from @Cookson. I chose the ones cleaned for Himalayan expeditions. Cookson got his datasets from The Himalayan Database (@Salisbury). 
+The raw datasets were obtained from @Cookson, who sourced them from The Himalayan Database [@Salisbury]. 
 
 The Himalayan Database is a compilation of records for all expeditions that have climbed in the Nepal Himalaya. The database is based on the expedition archives of Elizabeth Hawley, a longtime journalist based in Kathmandu, and it is supplemented by information gathered from books, alpine journals and correspondence with Himalayan climbers.
 
 The original database currently covers all expeditions from 1905 through Spring-Summer 2023 to the most significant mountaineering peaks in Nepal. Also included are expeditions to both sides of border peaks such as Everest, Cho Oyu, Makalu and Kangchenjunga as well as to some smaller border peaks. Data on expeditions to trekking peaks are included for early attempts, first ascents and major accidents. The updates to this database are published bi-annually. 
 
-My dataset derived from Cookson's contains the entries from 1905 through Spring 2019.
+My dataset, derived from Cookson's, contains the entries from 1905 through Spring 2019.
 
-The three datasets I considered included information about all peaks, all expeditions on those peaks and all members on those expeditions. The data from these three datasets are combined to form the main analysis dataset. 
+The three datasets I considered included information about all peaks in Nepal, all expeditions on those peaks and all members on those expeditions. I then combines the data from these three datasets to form the main analysis dataset. 
+
 A person becomes an entry in my analysis dataset if, between 1905 and Spring 2019, they attempted to climb any one of the many Himalayan peaks in Nepal. It also included expeditions to both sides of border peaks as mentioned before. 
 
 Among the overall range of variables available, I chose the following to be included in the analysis dataset. 
 
 - `Height` is the height range in which the peak's height in metres falls. This is for the peak the person in the current entry is on an expedition for. The categories for this are 5400 - 5749, 5750 - 6099, 6100 - 6449, 6450 - 6799, 6800 - 7149, 7150 - 7499, 7500 - 7849, 7850 - 8199, 8200 - 8549 and 8550 - 8900.
-- `Seasons` is the season the expedition is embarked in. This takes on either of the four values: Autumn, Spring, Winter, Summer.
+- `Seasons` is the season the expedition is embarked on. This takes on either of the four values: autumn, spring, winter, summer.
 - `Sex` is the sex reported by the expedition member and it is either male or female.
-- `Age` is the age group in which the expedition member fell in at the time of the expedition. Depending on the best available data, this could be as of the summit date, the date of death, or the date of arrival at basecamp. The different categories for this are Under 18,19-30, 31-40, 41-50, 51-60, 61-70, 71-80 and 81-90.
-- `Success`represents whether the person's expedition resulted in a successful summit.
-- `Solo` represents whether the person attempted a solo ascent.
-- `Died` represents whether the person died during the expedition.
+- `Age` is the age group in which the expedition member fell at the time of the expedition. Depending on the best available data, this could be as of the summit date, the date of death, or the date of arrival at basecamp. The different categories for this are Under 18, 19-30, 31-40, 41-50, 51-60, 61-70, 71-80 and 81-90.
+- `Success` indicates if the person's expedition resulted in a successful summit.
+- `Solo` indicates if the person attempted a solo ascent.
+- `Died` indicates if the person died during the expedition.
 
 ```{r}
 #| echo: false
@@ -107,7 +108,7 @@ plot_bar(analysis_data, "seasons", "Season")
 plot_bar(analysis_data, "height_range", "Height of the Peak")
 ```
 
-@fig-counts shows the counts for different variables we are considering to model. We see that there are significantly higher men than women. This shows the existence of a gender imbalance skewed towards men in mountaineering in the Himalayas. We also see other trends like most of the expedition members choose to not do solo ascents, most of the members fall in the middle-aged range and the peak expedition seasons are the more pleasant autumn and spring compared to the extreme seasons like winter and summer. These difference in counts need to be kept in mind when analysing success proportions.
+@fig-counts displays the counts for various variables I will be modelling. We see that there are significantly higher men than women. This shows the existence of a gender imbalance skewed towards men in mountaineering in the Himalayas. Additionally, most expedition members opt not to attempt solo ascents and fall within the middle-aged range. Lastly, we see the peak expedition seasons are the more pleasant autumn and spring over the extreme seasons like summer and winter. These count disparities should be considered when analysing success proportions.
 
 ```{r}
 #| echo: false
@@ -167,14 +168,14 @@ create_plot(analysis_data, "seasons", "Season")
 create_plot(analysis_data, "height_range", "Height of the Peak")
 ```
 
-@fig-proportions shows the proportion of expedition members who has a successful outcome or died during their expedition. For sex, we see more men had successful expeditions compared to women. This is interesting keeping in the mind the vast difference in the counts of these two sexes going on expeditions. It might spark an interesting discussion into the gender imbalance in mountaineering. Additionally, we see most of the people who go on expeditions solo have more deaths which might explain the difference in the counts of people attempting solo ascent versus not attempting a solo ascent which was observed earlier. Some other trend we observe are that success rates decline with age and winter season contributes to the most deaths. The success and death proportions based on the height are very varied and do not follow a specific trend. This goes to show that just the height of the peak alone doesn't define the probability of having a successful summit but there are other factors which go into it.
+@fig-proportions shows the proportion of expedition members who had a successful outcome or died during their expedition. For sex, we see that more men had successful expeditions compared to women. Moreover, individuals who embark on solo expeditions have a higher mortality rate, potentially explaining the difference in the number of people attempting solo ascent observed earlier. Some other trends that can be observed are that success rates decline with age, and winter contributes to the most deaths. The success and death proportions based on the height of the peak are very varied and do not follow a specific trend. This goes to show that just the height of the peak alone doesn't define the probability of having a successful summit but there are other factors that contribute to it.
 
 \newpage
 
 # Model {#sec-model}
-I used a Bayesian Logistic Regression model to find the probability that someone will successfully summit the Himalayan peak they are on the expedition for. Logistic regression is a method used for binary classification to predict the probability of a categorical dependent variable. 
+I used a Bayesian Logistic Regression model to determine the likelihood of an individual successfully reaching the summit of the Himalayan peak they are attempting to climb during the expedition. Logistic regression is a statistical technique used for binary classification to predict the probability of a categorical dependent variable. 
 
-My model will be based on five independent demographic variables: `height of the peak`, `sex`, `age`, `seasons` and `solo` and the dependent variable will be `success`.
+My model will be based on five independent demographic variables: `height`, `sex`, `age`, `seasons` and `solo` and the dependent variable will be `success`.
 
 The logistic regression model I will be using is:
 \begin{equation}
@@ -207,19 +208,6 @@ The chosen priors allow the data to largely determine the posterior distribution
 
 The use of moderately wide priors can also help regularize the model, preventing overfitting and providing more stable estimates, particularly when dealing with limited data.
 
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| label: tbl-model-coefficients
-#| tbl-cap: Summary of the model
-
-# Extract coefficients
-coefficients <- broom::tidy(expeditions_model, conf.int = TRUE)
-coefficients |> kable(digits = 2)
-```
-@tbl-model-coefficients shows the coefficients for my Bayesian model along with the standard error and the 95% credible interval. The standard error (SE) is a measure of the precision with which a sample statistic estimates a population parameter. It quantifies the variability of sample statistics around the population parameter. A 95% credible interval means that there is a 95% probability that the true parameter lies within the interval, given the observed data and the model assumptions. 
-
 # Results {#sec-results}
 
 ```{r}
@@ -228,6 +216,9 @@ coefficients |> kable(digits = 2)
 #| message: false
 #| label: fig-model-coefficients
 #| fig-cap: Coefficients of the model
+
+# Coefficients for the model
+coefficients <- broom::tidy(expeditions_model, conf.int = TRUE)
 
 # Remove the coefficient for age_range81-90 as it is very small
 coefficients <- coefficients[coefficients$term != "age_range81-90", ]
@@ -241,9 +232,9 @@ ggplot(coefficients, aes(x = estimate, y = term)) +
   theme_minimal() # Minimal theme for better readability
 ``` 
 
-@fig-model-coefficients illustrates the coefficients and their associated 95% credible intervals for the predictor variables in the Bayesian model. Each point represents the estimated coefficient for a predictor variable, while the horizontal lines depict the credible interval around the estimate. Variables with coefficients to the right of zero indicate a positive association with the outcome variable, suggesting that an increase in the predictor variable corresponds to an increase in the outcome variable. Conversely, coefficients to the left of zero indicate a negative association, implying that an increase in the predictor variable is associated with a decrease in the outcome variable. These insights can help in understanding the direction and magnitude of the relationships between predictor variables and the outcome in the Bayesian model. I removed the coefficient for age_range81-90 which according to @tbl-model-coefficients was very small leading to all other coefficients being uninterpretable in the plot.
+@fig-model-coefficients illustrates the coefficients and their corresponding 95% credible intervals for the predictor variables in the Bayesian model. A 95% credible interval means that there is a 95% probability that the true parameter lies within the interval, given the observed data and the model assumptions. Each point represents the estimated coefficient for a predictor variable, with the horizontal lines indicating the credible interval around the estimate. Variables with coefficients to the right of zero indicate a positive association with the outcome variable, suggesting that an increase in the predictor variable corresponds to an increase in the outcome variable. Conversely, coefficients to the left of zero indicate a negative association, implying that an increase in the predictor variable is associated with a decrease in the outcome variable. These insights can help in understanding the direction and magnitude of the relationships between predictor variables and the outcome in the Bayesian model. The coefficient for the age_range81-90 variable was removed due to its small magnitude, which was affecting the interpretability of other coefficients in the plot.
 
-We see that the males have a slightly higher success probability compared to females. We also notice how expeditions in Summer and Winter have lesser success probability than Autumn whereas Spring has higher success probability than it. Additionally, we notice the success probabilities getting lower with increase in age.
+The analysis shows that males have a slightly higher success probability compared to females. Furthermore, expeditions in summer and winter show lower success probability than autumn, while spring shows a higher success probability. Additionally, the success probabilities decrease with increase in age.
 
 ```{r}
 #| echo: false
@@ -268,7 +259,7 @@ ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
   facet_grid(sex ~ .) +
   theme_minimal()
 ```
-@fig-age-sex shows the predicted success probability according the the age and sex of the expedition member. We notice that the success probabilities over all ages tend to be slightly higher in males compared to females, just as we saw in @fig-model-coefficients. But, when combined with age we see there differences are not constant. We see that the difference in the success probabilities for people under 50 are very close to each other but for people aged 51 or above the difference is much larger. The success probabilities are pretty high, crossing 0.8 for younger individuals but starts declining with increase in age. The steep decline in category 81-90 might stem from the significant less number of expedition members in that age group leading to a less varied result.
+@fig-age-sex shows the predicted success probability based on the age and sex of expedition members. It is evident that success probabilities are slightly higher for males across all ages, consistent with the findings in @fig-model-coefficients. However, when age is factored in, these differences vary. For individuals under 50, the success probabilities for males and females are similar, but for those aged 51 and above, the gap widens significantly. Success probabilities are notably high, exceeding 0.8 for younger individuals but decrease with age. The sharp decline in the 81-90 age category may be attributed to the smaller number of expedition members in that age group, resulting in less reliable outcomes.
 
 ```{r}
 #| echo: false
@@ -288,22 +279,65 @@ ggplot(predictions, aes(x = height_range, y = success_probability, fill = season
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-@fig-height-seasons shows the predicted success probability according the the height of the peak being ascended and the season of expedition. We notice that the success probabilities are pretty high for shorter mountain ranges and become lesser with increase in height. This might have to do with the fact that less higher peaks could be comparatively easier to summit. This, however, cannot be established as the trend as we see a non-pattern being followed for heights 6800 metres and above. We see that winter season expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. We also notice interesting trend as an interaction of these two factors. One such trend would be the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in Winter to around 0.6 in Autumn or Spring.
+@fig-height-seasons shows the predicted success probability based on the height of the peak and the season of the expedition. Success probabilities are higher for shorter mountain ranges and decrease with increase in height. This might have to do with the fact that less higher peaks could be comparatively easier to summit. This, however, cannot be established as the trend as it is not consistent for peaks above 6800 meters.
+
+Winter expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. The interaction of these two factors provide an interesting insight. It is observed that the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in winter to around 0.6 in autumn or spring.
 
 # Discussion {#sec-discussion}
-1) What is done in this paper? 
-2) What is something that we learn about the world?
+## Male dominance in mountaineering
+Mountaineering, as evident by the data, presents a significant gender gap, with men outnumbering women by nearly sixfold in expedition participation. @fig-counts shows us the counts of our independent variables and if we look at sex, we notice there are almost six times more male expedition members. This gender gap underscores the sport's male-dominated nature.
+
+The physical demands of mountaineering, requiring exceptional strength and endurance, align with biological differences between sexes, as men typically have greater muscle mass and strength. This may explain why men are more drawn to mountaineering due to their physical advantages. To have the same physical strength, a woman would need to work much harder.
+
+Despite the numerical difference, an interesting observation emerges from the analysis of success probabilities. @fig-model-coefficients and @fig-age-sex show how the success probabilities of men and women are not extremelyx different. While men have a slightly higher likelihood of reaching the summit, women show commendable success rates despite their lower representation in expeditions. 
+
+This suggests that factors beyond sheer physical strength contribute to summit success, and one of those factors can be will power. As mentioned, women often face the reality of needing to exert greater effort due to inherent physical differences, coupled with the underrepresentation within mountaineering circles. The notable success rates among women despite these challenges highlight not only their physical strength but also underscore their exceptional mental resilience and inner motivation.
+
+These findings support the need for initiatives to promote gender diversity in mountaineering. Implementing programs and incentives tailored specifically for women can help overcome barriers, encourage more participation, and bring diverse perspectives and experiences to the mountaineering community.
+
+## Spring and Autumn are the best time for expeditions
+Autumn and spring, as transitional seasons, provide favorable conditions for mountaineering expeditions. The periods offer moderate temperatures and more stable weather patterns compared to the extremes of summer and winter. @fig-model-coefficients and @fig-height-seasons show the difference in probabilities of success by seasons and highlight highest chances of success in spring followed by autumn. 
+
+Conversely, summer and winter present significant challenges for mountaineers. Summer brings the risks of intense heat and thunderstorms, increasing the likelihood of rockfall and other hazards while winter conditions are characterized by extreme cold, high winds, heavy snowfall, and increased avalanche danger, making ascent and descent more difficult and hazardous. As a result, winter is generally considered the least desirable season for mountaineering expeditions.
+
+In conclusion, autumn and spring are the optimal seasons for mountaineering expeditions, and season selection is a crucial factor in expedition planning.
+
+## Chances of success decline with increase in age
+Age is a key factor in mountaineering success, with success rates typically decreasing with increase in age. 
+
+@fig-model-coefficients and @fig-age-sex show the impact of age on summit success. The impact of age on summit success is evident in the declining success rates with increase in age, influenced by factors such as reduced muscle mass, strength, and aerobic capacity associated with aging. Older climbers may also face challenges related to agility, flexibility, and recovery capacity, which can affect their performance on challenging terrain and recovery from strenuous exertion.
+
+Moreover, age-related health issues like cardiovascular problems, joint stiffness, and decreased bone density can further hinder older climbers' ability to meet the physical demands of mountaineering. These factors contribute to a decline in overall performance and increase the likelihood of encountering difficulties during expeditions.
+
+While age-related decline in mountaineering performance is noticeable, it is essential to recognize that success in mountaineering is not solely determined by physical capabilities. Experience, skill, preparation, and mindset also play crucial roles in summit success. Older climbers can compensate for physiological limitations through greater experience, strategic planning, and mental resilience, enabling them to pursue their mountaineering goals despite age-related challenges.
+
+In summary, age-related impacts on mountaineering success are significant, with success rates generally decreasing as climbers age. However, older climbers can overcome some of these challenges through experience, skill, strength training, and a strong mindset, allowing them to continue enjoying mountaineering well into their later years.
 
 ## Weaknesses and Limitations
+While my analysis offers valuable insights into the factors influencing a successful summit, it is important to acknowledge the weaknesses and limitations.
+
+Firstly, some success probabilities should be viewed with skepticism due to potential inaccuracies. Discrepancies in the counts of different categories may lead to imprecise success probabilities. For instance, the number of individuals attempting a solo ascent was significantly lower than those in group ascents. However, our model coefficients indicate for solo ascents was higher. This could create a misconception that solo ascents have better chances of success, potentially influencing more people to choose this option without considering other contributing factors. These probabilities may be influenced by the limited sample size of solo ascents, which lacks diverse data to account for confounding variables. There might be other factors which play a role like will power. Individuals opting for solo expeditions likely possess high levels of determination which can be a confounding factor playing into their success.
+
+Additionally, while we focused on focused on a few factors, there are numerous other variables that could impact the likelihood of a successful summit. Nationality and group size were two factors which were available in the raw data and I believed were factors which could have played a significant difference. These were later removed due to the lack of consistency in those variable’s. For instance, the way the number of members were reported differed from record to record. As the dataset also included the people summiting the other side of border peaks, some countries reported this number differently than others. For expeditions in Nepal, this was usually the number of foreigners listed on the expedition permit whereas in China, this was usually the number of non-hired members.
 
 ## Future Directions
+Moving forward, additional research is necessary to address the limitations discussed and improve the dataset to enhance our understanding of factors contributing to a successful summit. Including more diverse information can help uncover additional factors influencing a successful summit. Some of these factors that can be explored would be nationality of the person, attempt number, a metric for that could measure their level of preparedness and group size. 
+
+Nationality can play a role as the cultural background and national resources can play a significant role in shaping an individual's climbing experience. Different countries may have different levels of access to training facilities, equipment, and support networks for climbers. Additionally, genetic differences between individuals may also play a role. 
+
+Analysing the number of attempts made by climbers before a successful summit can reveal patterns related to perseverance, learning from past experiences, and adapting strategies. It can help determine whether repeated attempts increase success rates or reach a point of diminishing returns.
+
+Developing a metric to measure climbers' preparedness can quantify the various aspects of readiness, including physical fitness, technical skills, mental resilience, and logistical planning. Understanding the relationship between preparedness levels and summit success can guide training and preparation efforts.
+
+Group dynamics play a crucial role in mountaineering, affecting decision-making, safety, resource allocation, and overall team morale. Studying how group size influences summit success can provide insights into optimal team composition, leadership structures, and communication strategies. It can also highlight the trade-offs between the benefits of larger teams and the challenges of coordinating and managing them effectively.
+
 
 # Appendix
 
 ## Cleaning
 For the analysis data, the cleaning steps I took were:
 
-1. Initial merging: The raw data from the expeditions and members datasets is merged based on a common identifier, expedition_id, consolidating information about expedition participants.
+1. Initial merging: The raw data from the `expeditions` and `members` datasets is merged based on a common identifier, `expedition_id`, consolidating information about expedition participants.
 
 2. Column selection and renaming: Irrelevant columns are removed from the merged dataset, and the remaining columns (`peak_id.x`, `season.x`, `sex`, `age`, `success`, `solo`, `died`) are selected for further analysis. Additionally, column `peak_id.x` is renamed to `peak_id`.
 
@@ -316,8 +350,6 @@ For the analysis data, the cleaning steps I took were:
 5. Final dataset creation: `season.x` is renamed to `seasons`. and then the resulting dataset is further refined to include only relevant columns (`height_range`, `seasons`, `sex`, `age_range`, `success`, `solo`, `died`).
 
 ## Analysis dataset
-Here is a glimpse of the dataset used for analysis
-
 ```{r}
 #| echo: false
 #| warning: false
@@ -329,21 +361,89 @@ Here is a glimpse of the dataset used for analysis
 head(analysis_data) %>%
   kable(digits = 2)
 ```
+@tbl-survey provides a glimpse of the dataset used for analysis.
 
 ## Model summary
-
-## Posterior distribution
 ```{r}
-#| label: fig-post_dist
-#| fig-cap: Posterior distribution for logistic regression model
 #| echo: false
 #| warning: false
 #| message: false
+#| label: tbl-model-coefficients
+#| tbl-cap: Summary of the model
+
+# Extract coefficients
+coefficients <- broom::tidy(expeditions_model, conf.int = TRUE)
+coefficients |> kable(digits = 2)
+```
+@tbl-model-coefficients shows the coefficients for my Bayesian model along with the standard error and the 95% credible interval. The standard error (SE) is a measure of the precision with which a sample statistic estimates a population parameter. It quantifies the variability of sample statistics around the population parameter. 
+
+## Posterior predictive check
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-post
+#| fig-cap: Posterior distribution for logistic regression model
 
 library(bayesplot)
 
 pp_check(expeditions_model) +
   theme(legend.position = "bottom")
+
+``` 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-prior-post
+#| fig-cap: Comparing prior distribution with posterior distribution
+
+library(broom)
+library(broom.mixed)
+library(knitr)
+library(modelsummary)
+library(purrr)
+library(rstanarm)
+library(testthat)
+library(tidyverse)
+
+posterior_vs_prior(expeditions_model) +
+  theme_minimal() +
+  theme(axis.text.x=element_text(hjust=1, vjust=0.5),
+        text=element_text(size=8)) +
+  guides(color = guide_legend(ncol = 6))+
+  theme(legend.position = "bottom") +
+  coord_flip()
 ```
+@fig-post and @fig-prior-post are used to understand assess the quality of our model. 
+
+@fig-post is the result of a posterior predictive check and is used to compare the actual outcome variable with simulations from the posterior distribution. @fig-prior-post is the result of comparing the posterior with the prior to see how much the estimates change once data are taken into account. Both these results support the model doing a good job of fitting the data.
+
+## Markov chain Monte Carlo (MCMC) Convergence Check
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-trace
+#| fig-cap: "Trace plot"
+ 
+layout(matrix(1:6, ncol = 3))
+plot(expeditions_model, "trace")
+
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-rhat
+#| fig-cap: "Rhat plot"
+
+plot(expeditions_model, "rhat")
+```
+My model, modelled using `rstanarm` [@citeRstanarm] uses a sampling algorithm called Markov chain Monte Carlo (MCMC) to obtain samples from the posterior distributions of interest. @fig-trace and @fig-rhat are used to check for the existence of signs that the algorithm ran into issues. @fig-trace does not suggest anything out of the ordinary and everything in @fig-rhat is close to 1 suggesting no problem as well.
 
 # References
