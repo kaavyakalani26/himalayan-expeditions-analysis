@@ -13,7 +13,7 @@ The repo is structured as:
 -   `data/analysis_data` contains the cleaned dataset that was constructed.
 -   `data/predictions` contains the predicted success probabilities.
 -   `models` contains fitted the model.
--   `other/datasheet` contains the datasheet for the cleaned analysis dataset which I created for my study.
+-   `other/datasheet` contains the files to generate the datasheet for the cleaned analysis dataset which I created for my study. It includes the Quarto document and reference bibliography file, as well as the PDF of the datasheet.
 -   `other/sketches` contains the sketches for dataset and graphs.
 -   `other/llm` contains the LLM conversation.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
