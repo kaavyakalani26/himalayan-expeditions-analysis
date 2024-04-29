@@ -55,13 +55,13 @@ For this analysis, I have combined three datasets into one, which is used for an
 ## Analysis Dataset
 The raw datasets were obtained from @Cookson, who sourced them from The Himalayan Database [@Salisbury]. 
 
-The Himalayan Database is a compilation of records for all expeditions that have climbed in the Nepal Himalaya. The database is based on the expedition archives of Elizabeth Hawley, a longtime journalist based in Kathmandu, and it is supplemented by information gathered from books, alpine journals and correspondence with Himalayan climbers.
+The Himalayan Database is a compilation of records for all expeditions that have climbed in the Nepal Himalaya. The database is based on the expedition archives of Elizabeth Hawley, a long-time journalist based in Kathmandu, and it is supplemented by information gathered from books, alpine journals and correspondence with Himalayan climbers.
 
 The original database currently covers all expeditions from 1905 through Spring-Summer 2023 to the most significant mountaineering peaks in Nepal. Also included are expeditions to both sides of border peaks such as Everest, Cho Oyu, Makalu and Kangchenjunga as well as to some smaller border peaks. Data on expeditions to trekking peaks are included for early attempts, first ascents and major accidents. The updates to this database are published bi-annually. 
 
 My dataset, derived from Cookson's, contains the entries from 1905 through Spring 2019.
 
-The three datasets I considered included information about all peaks in Nepal, all expeditions on those peaks and all members on those expeditions. I then combines the data from these three datasets to form the main analysis dataset. 
+The three datasets I considered included information about all peaks in Nepal, all expeditions on those peaks and all members on those expeditions. I then combine the data from these three datasets to form the main analysis dataset. 
 
 A person becomes an entry in my analysis dataset if, between 1905 and Spring 2019, they attempted to climb any one of the many Himalayan peaks in Nepal. It also included expeditions to both sides of border peaks as mentioned before. 
 
@@ -188,7 +188,6 @@ create_plot(analysis_data, "height_range", "Height of the Peak")
 
 @fig-proportions shows the proportion of expedition members who had a successful outcome or died during their expedition. For sex, it is observed that more men had successful expeditions compared to women. Moreover, individuals who embark on solo expeditions have a higher mortality rate, potentially explaining the difference in the number of people attempting solo ascent observed earlier. Some other trends that can be observed are that success rates decline with age, and winter contributes to the most deaths. The success and death proportions based on the height of the peak are very varied and do not follow a specific trend. This goes to show that just the height of the peak alone doesn't define the probability of having a successful summit but there are other factors that contribute to it.
 
-\newpage
 
 # Model {#sec-model}
 I used a Bayesian Logistic Regression model to determine the likelihood of an individual successfully reaching the summit of the Himalayan peak they are attempting to climb during the expedition. Logistic regression is a statistical technique used for binary classification to predict the probability of a categorical dependent variable. 
@@ -282,8 +281,6 @@ ggplot(predictions, aes(x = age_range, y = success_probability, fill = sex)) +
 ```
 @fig-age-sex shows the predicted success probability based on the age and sex of expedition members. It is evident that success probabilities are slightly higher for males across all ages, consistent with the findings in @fig-model-coefficients. However, when age is factored in, these differences vary. For individuals under 50, the success probabilities for males and females are similar, but for those aged 51 and above, the gap widens significantly. Success probabilities are notably high, exceeding 0.8 for younger individuals but decrease with age. The sharp decline in the 81-90 age category may be attributed to the smaller number of expedition members in that age group, resulting in less reliable outcomes.
 
-\newpage
-
 ```{r}
 #| echo: false
 #| warning: false
@@ -304,9 +301,7 @@ ggplot(predictions, aes(x = height_range, y = success_probability, fill = season
 ```
 @fig-height-seasons shows the predicted success probability based on the height of the peak and the season of the expedition. Success probabilities are higher for shorter mountain ranges and decrease with increase in height. This might have to do with the fact that less higher peaks could be comparatively easier to summit. This, however, cannot be established as the trend as it is not consistent for peaks above 6800 meters.
 
-Winter expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. The interaction of these two factors provide an interesting insight. It is observed that the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in winter to around 0.6 in autumn or spring.
-
-\newpage
+Winter expeditions have lower success probabilities, probably owning to the extreme cold conditions at higher altitudes. The interaction of these two factors provide an interesting insight. It is observed that the success probabilities during different seasons for peaks between 5400 metres and 5749 metres are all comparatively closer to each other than compared to peaks between 7500 metres and 7849 metres in height. All seasons' success probabilities for peaks between 5400 metres and 5749 metres fall between 0.85 to 0.9 whereas for peaks between 7500 metres and 7848 metres, the success probabilities go from around 0.35 in winter to around 0.6 in autumn or spring.
 
 # Discussion {#sec-discussion}
 ## Male dominance in mountaineering
@@ -336,18 +331,16 @@ Moreover, age-related health issues like cardiovascular problems, joint stiffnes
 
 @Age highlight some of the same issues and factors when analysing endurance performance in masters athletes.
 
-While age-related decline in mountaineering performance is noticeable, it is essential to recognize that success in mountaineering is not solely determined by physical capabilities. Experience, skill, preparation, and mindset also play an important roles in summit success. Older climbers can compensate for physiological limitations through greater experience, strategic planning, and mental resilience, enabling them to pursue their mountaineering goals despite age-related challenges.
+While age-related decline in mountaineering performance is noticeable, it is essential to recognize that success in mountaineering is not solely determined by physical capabilities. Experience, skill, preparation, and mindset also play important roles in summit success. Older climbers can compensate for physiological limitations through greater experience, strategic planning, and mental resilience, enabling them to pursue their mountaineering goals despite age-related challenges.
 
 In summary, age-related impacts on mountaineering success are significant, with success rates generally decreasing as climbers age. However, older climbers can overcome some of these challenges through experience, skill, strength training, and a strong mindset, allowing them to continue enjoying mountaineering well into their later years.
-
-\newpage
 
 ## Weaknesses and Limitations
 While my analysis offers valuable insights into the factors influencing a successful summit, it is important to acknowledge the weaknesses and limitations.
 
 Firstly, some success probabilities should be viewed with skepticism due to potential inaccuracies. Discrepancies in the counts of different categories may lead to imprecise success probabilities. For instance, the number of individuals attempting a solo ascent was significantly lower than those in group ascents. However, my model coefficients indicate for solo ascents was higher. This could create a misconception that solo ascents have better chances of success, potentially influencing more people to choose this option without considering other contributing factors. These probabilities may be influenced by the limited sample size of solo ascents, which lacks diverse data to account for confounding variables. There might be other factors which play a role like will power. Individuals opting for solo expeditions likely possess high levels of determination which can be a confounding factor playing into their success.
 
-Additionally, while I focused on focused on a few factors, there are numerous other variables that could impact the likelihood of a successful summit. Nationality and group size were two factors which were available in the raw data and I believed were factors which could have played a significant difference. These were later removed due to the lack of consistency in those variable’s. For instance, the way the number of members were reported differed from record to record. As the dataset also included the people summiting the other side of border peaks, some countries reported this number differently than others. For expeditions in Nepal, this was usually the number of foreigners listed on the expedition permit whereas in China, this was usually the number of non-hired members.
+Additionally, while I focused on focused on a few factors, there are numerous other variables that could impact the likelihood of a successful summit. Nationality and group size were two factors which were available in the raw data and I believed were factors which could have played a significant difference. These were later removed due to the lack of consistency in those variables. For instance, the way the number of members were reported differed from record to record. As the dataset also included the people summiting the other side of border peaks, some countries reported this number differently than others. For expeditions in Nepal, this was usually the number of foreigners listed on the expedition permit whereas in China, this was usually the number of non-hired members.
 
 ## Future Directions
 Moving forward, additional research is necessary to address the limitations discussed and improve the dataset to enhance the understanding of factors contributing to a successful summit. Including more diverse information can help uncover additional factors influencing a successful summit. Some of these factors that can be explored would be nationality of the person, attempt number, a metric for that could measure their level of preparedness and group size. 
@@ -359,6 +352,11 @@ Analysing the number of attempts made by climbers before a successful summit can
 Developing a metric to measure climbers' preparedness can quantify the various aspects of readiness, including physical fitness, technical skills, mental resilience, and logistical planning. Understanding the relationship between preparedness levels and summit success can guide training and preparation efforts.
 
 Group dynamics play an important role in mountaineering, affecting decision-making, safety, resource allocation, and overall team morale. Studying how group size influences summit success can provide insights into optimal team composition, leadership structures, and communication strategies. It can also highlight the trade-offs between the benefits of larger teams and the challenges of coordinating and managing them effectively.
+
+
+\newpage
+
+\appendix
 
 
 # Appendix {#sec-appendix}
