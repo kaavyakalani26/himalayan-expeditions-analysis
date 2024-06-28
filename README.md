@@ -2,7 +2,7 @@
 
 ## Overview
 
-The study analyses the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. This study contributes to better understand the factors contributing to a successful summit and and helps for future expedition planning, risk management, and safety protocols.
+The study analyses the relationship between different demographic, environmental and geographic factors and the successfulness of an attempt to summit a peak. Data from Himalayan expeditions in Nepal from 1905 through Spring 2019 is used and a Bayesian Logistic Regression model is leveraged to analyse the trends and factors influencing a successful summit. This study contributes to better understand the factors contributing to a successful summit and helps for future expedition planning, risk management, and safety protocols.
 
 To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
 
